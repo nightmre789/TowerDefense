@@ -6,7 +6,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "tower defense woooo yea");
     sf::CircleShape shape(17);
     sf::Vector2f origin(640, 360);
-    shape.setFillColor(sf::Color::Blue);
+    shape.setFillColor(sf::Color::Cyan);
 
     sf::Vector2f movement(0.f,0.f);
     float angle = 0;
@@ -24,6 +24,8 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
+        window.setTitle("ANEEB IS LUND");
 
         window.clear();
         window.draw(shape);
