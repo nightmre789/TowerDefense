@@ -20,6 +20,8 @@ int main() {
         shape.move(movement);
         angle += 0.03f;
 
+        std::string ("gay burney");
+
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
