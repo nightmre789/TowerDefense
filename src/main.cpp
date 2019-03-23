@@ -6,7 +6,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "tower defense woooo yea");
     sf::CircleShape shape(17);
     sf::Vector2f origin(640, 360);
-    shape.setFillColor(sf::Color::Magenta);
+    shape.setFillColor(sf::Color::Blue);
 
     sf::Vector2f movement(0.f,0.f);
     float angle = 0;
@@ -18,8 +18,9 @@ int main() {
         movement.y = origin.y + std::sin(angle) * 250 - shape.getPosition().y;
 
         shape.move(movement);
-        angle += 0.01f;
-        std::string("test");
+        angle += 0.03f;
+
+        std::string ("gay burney");
 
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
