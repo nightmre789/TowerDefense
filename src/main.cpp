@@ -19,6 +19,7 @@ int main() {
 
         shape.move(movement);
         angle += 0.01f;
+        std::string("test");
 
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
