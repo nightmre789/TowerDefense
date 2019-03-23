@@ -18,7 +18,7 @@ int main() {
         movement.y = origin.y + std::sin(angle) * 250 - shape.getPosition().y;
 
         shape.move(movement);
-        angle += 0.005f;
+        angle += 0.01f;
 
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
