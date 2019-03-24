@@ -6,18 +6,17 @@
 using namespace sf;
 
 int main() {
-    RenderWindow win(VideoMode(800, 600), "TweenSF | Example1");
+    RenderWindow win(VideoMode(1280, 720), "take 2. we bak boys");
 
-    CircleShape sh(100);
-    sh.setFillColor(Color::Black);
+    CircleShape c(100);
+    c.setFillColor(Color::Black);
 
-    Properties<CircleShape> p1 = sh;
-    p1.position += Vector2f(300, 300);
-    p1.scale = Vector2f(0.5f, 0.5f);
-    p1.fillColor = Color::Red;
+    Properties<CircleShape> p = c;
+    p.position += Vector2f(600, 600);
+    p.scale = Vector2f(0.25f, 0.25f);
+    p.fillColor = Color::Cyan;
 
-    // arguments: object to tween, target properties, duration, easing (default easing::linear)
-    Tween<CircleShape> tween(sh, p1, sf::seconds(5), bounceOut);
+    Tween<CircleShape> tween(c, p, sf::seconds(5.25), quintOut);
 
     Clock timer;
 
@@ -35,13 +34,13 @@ int main() {
         sf::Time delta = timer.restart();
         tween.update(delta); // tween calculates properties and automatically updates target object properties
 
-        win.draw(sh);
+        win.draw(c);
         win.display();
     }
     /*sf::RenderWindow window(sf::VideoMode(1280, 720), "tower defense woooo yea");
-    sf::CircleShape shape(17);
+    sf::CircleShape cape(17);
     sf::Vector2f origin(640, 360);
-    shape.setFillColor(sf::Color::Cyan);
+    cape.setFillColor(sf::Color::Cyan);
 
     sf::Vector2f movement(0.f,0.f);
     float angle = 0;
@@ -49,10 +48,10 @@ int main() {
     while (window.isOpen()) {
         sf::Event event{};
 
-        movement.x = origin.x + std::cos(angle) * 250 - shape.getPosition().x;
-        movement.y = origin.y + std::sin(angle) * 250 - shape.getPosition().y;
+        movement.x = origin.x + std::cos(angle) * 250 - cape.getPosition().x;
+        movement.y = origin.y + std::sin(angle) * 250 - cape.getPosition().y;
 
-        shape.move(movement);
+        cape.move(movement);
         angle += 0.03f;
 
         while (window.pollEvent(event)) {
@@ -60,7 +59,7 @@ int main() {
                 window.close();
         }
         window.clear();
-        window.draw(shape);
+        window.draw(cape);
         window.display();
     }
     return 0;*/
