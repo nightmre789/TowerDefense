@@ -1,6 +1,6 @@
 #pragma once
 #include "Ease.h"
-#include "../util/Util.h"
+#include "../Util.h"
 #include "Properties.h"
 
 template<class T>

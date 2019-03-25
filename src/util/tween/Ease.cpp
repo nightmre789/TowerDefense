@@ -1,5 +1,5 @@
 #include "Ease.h"
-#include "../util/Util.h"
+#include "../Util.h"
 
 #define lambda(d) [] (double d) -> double
 

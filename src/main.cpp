@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "tween/Tween.h"
+#include "util/tween/Tween.h"
 #include <cmath>
 #include <iostream>
 #include "util/Definitions.h"
