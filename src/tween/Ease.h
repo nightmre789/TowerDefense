@@ -1,5 +1,4 @@
-#ifndef TOWERDEFENSE_EASE_H
-#define TOWERDEFENSE_EASE_H
+#pragma once
 
 #include <cmath>
 #include <functional>
@@ -32,5 +31,3 @@ extern Ease
     backInDefault, backOutDefault, backInOutDefault,
     bounceIn, bounceOut, bounceInOut,
     elasticInDefault, elasticOutDefault, elasticInOutDefault;
-
-#endif //TOWERDEFENSE_EASE_H

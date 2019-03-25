@@ -1,5 +1,4 @@
-#ifndef TOWERDEFENSE_PROPERTIES_H
-#define TOWERDEFENSE_PROPERTIES_H
+#pragma  once
 
 #include <vector>
 #include <string>
@@ -130,5 +129,3 @@ public:
         f(color, "Text|color");
     }
 };
-
-#endif //TOWERDEFENSE_PROPERTIES_H

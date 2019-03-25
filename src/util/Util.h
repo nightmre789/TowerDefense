@@ -1,5 +1,4 @@
-#ifndef TOWERDEFENSE_MISC_H
-#define TOWERDEFENSE_MISC_H
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include "Definitions.h"
@@ -51,5 +50,3 @@ inline Vector2<T> operator * (const Vector2<T> &l, double r) {
         l.y * r
     };
 }
-
-#endif //TOWERDEFENSE_MISC_H
