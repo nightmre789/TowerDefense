@@ -1,11 +1,8 @@
 #ifndef TOWERDEFENSE_TWEEN_H
 #define TOWERDEFENSE_TWEEN_H
 
-#ifndef TWEEN_H
-#define TWEEN_H
-
 #include "Ease.h"
-#include "Util.h"
+#include "../util/Util.h"
 #include "Properties.h"
 
 template<class T>
@@ -41,8 +38,5 @@ public:
 };
 
 #include "tweenImp.inl"
-
-#endif // TWEEN_H
-
 
 #endif //TOWERDEFENSE_TWEEN_H

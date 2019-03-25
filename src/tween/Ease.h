@@ -28,10 +28,6 @@ Ease elasticInOut(double amplitude, double period);
 
 extern Ease
     linear,
-    quadIn, quadOut, quadInOut,
-    cubicIn, cubicOut, cubicInOut,
-    quartIn, quartOut, quartInOut,
-    quintIn, quintOut, quintInOut,
     sineIn, sineOut, sineInOut,
     backInDefault, backOutDefault, backInOutDefault,
     bounceIn, bounceOut, bounceInOut,

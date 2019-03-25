@@ -2,15 +2,8 @@
 #define TOWERDEFENSE_MISC_H
 
 #include <SFML/Graphics.hpp>
+#include "Definitions.h"
 using namespace sf;
-
-#ifndef PI
-#define PI 3.14159265359
-#endif
-
-#ifndef PI_2
-#define PI_2 6.28318530718
-#endif
 
 inline Color operator * (const Color &l, double r) {
     return {

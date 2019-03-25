@@ -120,8 +120,8 @@ public:
     Properties(const ItemType &obj) : ParentType(obj) { importFrom(obj); }
     Properties() = default;
 
-    void importFrom(const ItemType &obj) { ParentType::importFrom(obj); characterSize = obj.getCharacterSize(); color = obj.getColor(); }
-    void exportTo(ItemType &obj) { ParentType::exportTo(obj); obj.setCharacterSize(characterSize); obj.setColor(color); }
+    void importFrom(const ItemType &obj) { ParentType::importFrom(obj); characterSize = obj.getCharacterSize(); color = obj.getFillColor(); }
+    void exportTo(ItemType &obj) { ParentType::exportTo(obj); obj.setCharacterSize(characterSize); obj.setFillColor(color); }
 
     template<class F>
     void forEachProperty(F &f) {

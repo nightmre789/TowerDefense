@@ -2,21 +2,22 @@
 #include "tween/Tween.h"
 #include <cmath>
 #include <iostream>
+#include "util/Definitions.h"
 
 using namespace sf;
 
 int main() {
-    RenderWindow win(VideoMode(1280, 720), "take 2. we bak boys");
+    RenderWindow win(VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "take 2. we bak boys");
 
     CircleShape c(100);
-    c.setFillColor(Color::Black);
+    c.setFillColor(Color(255,0,0,10)); // alpha
 
     Properties<CircleShape> p = c;
     p.position += Vector2f(600, 600);
     p.scale = Vector2f(0.25f, 0.25f);
-    p.fillColor = Color::Cyan;
+    p.fillColor = Color::Red;
 
-    Tween<CircleShape> tween(c, p, sf::seconds(5.25), quintOut);
+    Tween<CircleShape> tween(c, p, sf::seconds(5.25), powOut(4));
 
     Clock timer;
 
@@ -29,7 +30,7 @@ int main() {
                 win.close();
         }
 
-        win.clear(Color::White);
+        win.clear();
 
         sf::Time delta = timer.restart();
         tween.update(delta); // tween calculates properties and automatically updates target object properties

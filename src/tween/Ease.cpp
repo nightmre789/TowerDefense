@@ -1,5 +1,5 @@
 #include "Ease.h"
-#include "Util.h"
+#include "../util/Util.h"
 
 #define lambda(d) [] (double d) -> double
 
@@ -115,23 +115,6 @@ double getBackInOut(double d) {
 
 Ease
         linear = Ease(lambda(d) { return d; }),
-
-        quadIn = Ease(getPowIn<2>),
-        quadOut = Ease(getPowOut<2>),
-        quadInOut = Ease(getPowInOut<2>),
-
-        cubicIn = Ease(getPowIn<3>),
-        cubicOut = Ease(getPowOut<3>),
-        cubicInOut = Ease(getPowInOut<3>),
-
-        quartIn = Ease(getPowIn<4>),
-        quartOut = Ease(getPowOut<4>),
-        quartInOut = Ease(getPowInOut<4>),
-
-        quintIn = Ease(getPowIn<5>),
-        quintOut = Ease(getPowOut<5>),
-        quintInOut = Ease(getPowInOut<5>),
-
         sineIn = Ease(lambda(d) { return 1 - std::cos(d * PI / 2); }),
         sineOut = Ease(lambda(d) { return std::sin(d * PI / 2); }),
         sineInOut = Ease(lambda(d) { return -0.5 * (std::cos(PI * d) - 1); }),
