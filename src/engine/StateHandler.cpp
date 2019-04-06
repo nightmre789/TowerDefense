@@ -8,7 +8,7 @@ void StateHandler::pushState(pState toPush, bool override) {
 
 void StateHandler::popState() { this -> pop = true; }
 
-void StateHandler::updateStack() {
+void StateHandler::updateState() {
     if (pop && !states.empty()) {
         pop = false;
         states.pop();

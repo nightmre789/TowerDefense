@@ -1,6 +1,6 @@
 #pragma once
 
-#include "State.h"
+#include "States/State.h"
 #include <memory>
 #include <stack>
 using namespace std;
@@ -17,7 +17,7 @@ public:
 
     void pushState(pState toPush, bool override = true);
     void popState();
-    void updateStack();
+    void updateState();
 
     pState &getActiveState();
 };
