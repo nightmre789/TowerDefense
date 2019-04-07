@@ -3,15 +3,17 @@
 #include <SFML/Graphics.hpp>
 #include "State.h"
 #include "../../Game.h"
+#include "../ParticleEmitter.h"
 
 using namespace sf;
 
 class SplashState : public State {
-    GameData data;
+    ParticleEmitter particles;
+    pGameData data;
     Clock clock;
     Sprite bg;
 public:
-    SplashState(GameData data);
+    SplashState(pGameData data);
 
     void init() override;
     void handleInput() override;

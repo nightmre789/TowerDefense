@@ -1,8 +1,10 @@
+#include <utility>
+
 #include <sstream>
 #include <iostream>
 #include "SplashState.h"
 
-SplashState::SplashState(GameData data) : data(data)
+SplashState::SplashState(pGameData data) : data(std::move(data)), particles(100000)
 {}
 
 void SplashState::init() {
@@ -18,15 +20,15 @@ void SplashState::handleInput() {
 }
 
 void SplashState::update(float dt) {
-    // if splash done then switch state to menu
-    // temporary time for now.
+    particles.setEmitter(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window)));
+    particles.update(seconds(dt));
     if (clock.getElapsedTime().asSeconds() > 3) {
         cout << "Go to main menu" << endl;
     }
 }
 
 void SplashState::draw(float dt) {
-    data -> window.clear(Color::Red);
-    data -> window.draw(bg);
+    data -> window.clear();
+    data -> window.draw(particles);
     data -> window.display();
 }

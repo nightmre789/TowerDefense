@@ -14,12 +14,13 @@ struct GD {
     AssetHandler assetHandler;
     InputHandler inputHandler;
 };
-typedef shared_ptr <GD> GameData;
+typedef shared_ptr <GD> pGameData;
 
 class Game {
-    const float fps = 1.0f / 60.0f;
+    const float fps { 60.f };
+    const float dt { 1.f / fps};
     Clock gameClock;
-    GameData data = make_shared<GD>();
+    pGameData data = make_shared<GD>();
     void run();
 
 public:
