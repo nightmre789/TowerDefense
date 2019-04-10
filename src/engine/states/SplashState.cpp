@@ -3,13 +3,20 @@
 #include <sstream>
 #include <iostream>
 #include "SplashState.h"
+#include "../../util/Definitions.h"
 
-SplashState::SplashState(pGameData data) : data(std::move(data)), particles(100000)
+SplashState::SplashState(pGameData data) : data(std::move(data)), particles(2500)
 {}
 
 void SplashState::init() {
-    data -> assetHandler.loadTexture("Splash", "assets/images/fail.png");
-    bg.setTexture(data -> assetHandler.getTexture("Splash"));
+    data -> assetHandler.loadTexture("SplashBG", "assets/images/bg.png");
+    data -> assetHandler.loadTexture("SplashTitle", "assets/images/title.png");
+    data -> assetHandler.loadFont("Semilight", "assets/fonts/semilight.ttf");
+    bg.setTexture(data -> assetHandler.getTexture("SplashBG"));
+    title.setTexture(data -> assetHandler.getTexture("SplashTitle"));
+    loading.setFont(data -> assetHandler.getFont("Semilight"));
+    loading.setCharacterSize(26);
+    loading.setPosition(552, 552);
 }
 
 void SplashState::handleInput() {
@@ -20,15 +27,24 @@ void SplashState::handleInput() {
 }
 
 void SplashState::update(float dt) {
-    particles.setEmitter(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window)));
+    float elapsed = clock.getElapsedTime().asMilliseconds();
+    int state = (int) (elapsed / 200) % 4;
+    if (elapsed < 5000)
+        loading.setString(
+                state == 0 ? "Loading assets" :
+                state == 1 ? "Loading assets." :
+                state == 2 ? "Loading assets.." :
+                "Loading assets..."
+                );
     particles.update(seconds(dt));
-    if (clock.getElapsedTime().asSeconds() > 3) {
-        cout << "Go to main menu" << endl;
-    }
 }
 
 void SplashState::draw(float dt) {
-    data -> window.clear();
-    data -> window.draw(particles);
+    float elapsed = clock.getElapsedTime().asSeconds();
+    data -> window.clear(Color::Black);
+    data -> window.draw(bg);
+    if (elapsed > 0.5f) data -> window.draw(particles);
+    data -> window.draw(title);
+    data -> window.draw(loading);
     data -> window.display();
 }

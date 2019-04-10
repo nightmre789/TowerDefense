@@ -12,6 +12,8 @@ class SplashState : public State {
     pGameData data;
     Clock clock;
     Sprite bg;
+    Sprite title;
+    Text loading;
 public:
     SplashState(pGameData data);
 

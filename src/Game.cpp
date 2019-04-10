@@ -12,13 +12,13 @@ Game::Game(unsigned width, unsigned height, string title) {
 
 void Game::run() {
     while (data -> window.isOpen()) {
-
         data -> stateHandler.updateState();
 
         data -> stateHandler.getActiveState() -> handleInput();
         data -> stateHandler.getActiveState() -> update(dt);
 
         data -> stateHandler.getActiveState() -> draw (dt);
-        data -> window.clear(Color::Red);
+        data -> window.clear();
+        cout << "FPS: " << 1.f / gameClock.restart().asSeconds() << endl;
     }
 }
