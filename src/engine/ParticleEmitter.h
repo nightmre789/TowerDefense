@@ -1,3 +1,4 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include "../util/Definitions.h"
 #include <cmath>
@@ -32,7 +33,7 @@ class ParticleEmitter : public Drawable, public Transformable {
         particles[index].life = seconds(0);
 
         vertices[index].position = posOnLine();
-        vertices[index].color = {255, 170, 0, static_cast<Uint8 > (rand() % 200 + 55)};
+        vertices[index].color = {255, 170, 0, static_cast<Uint8> (rand() % 200 + 55)};
     }
 
 public:
