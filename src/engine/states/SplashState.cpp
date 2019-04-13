@@ -17,6 +17,7 @@ void SplashState::init() {
     loading.setFont(data -> assetHandler.getFont("Semilight"));
     loading.setCharacterSize(26);
     loading.setPosition(552, 552);*/
+    data -> assetHandler.loadTexture("Maaz", "assets/images/maaz.png");
 }
 
 void SplashState::handleInput() {
@@ -27,7 +28,7 @@ void SplashState::handleInput() {
             data -> window.close();
             break;
         case Event::MouseButtonPressed:
-            projectiles.addProjectile((Vector2f) Mouse::getPosition());
+            projectiles.addProjectile((Vector2f) Mouse::getPosition(), data -> assetHandler.getTexture("Maaz"));
             break;
 
     }

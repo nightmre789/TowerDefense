@@ -31,10 +31,11 @@ class Projectiles : public Drawable, public Transformable {
 public:
     Projectiles() = default;
 
-    void addProjectile(Vector2f aim) {
+    void addProjectile(Vector2f aim, Texture &text) {
         Vector2f aimDir = aim - Vector2f(640,360);
         Vector2f norm = aimDir / sqrt(static_cast<float>(pow(aimDir.x, 2) + pow(aimDir.y, 2)));
-        Projectile p(CircleShape(5.f), norm * 50.f, seconds(30));
+        Projectile p(CircleShape(100.f), norm * 50.f, seconds(30));
+        p.shape.setTexture(&text);
         projectiles.push_back(p);
     }
 
