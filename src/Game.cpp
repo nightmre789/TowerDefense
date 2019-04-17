@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "engine/states/SplashState.h"
+#include "states/SplashState.h"
 #include <iostream>
 
 using namespace std;
