@@ -5,5 +5,7 @@
 using namespace sf;
 
 int main() {
-   Game(SCREEN_WIDTH, SCREEN_HEIGHT, "Viral War");
+using namespace sf;
+Game(SCREEN_WIDTH, SCREEN_HEIGHT, "Viral War");
 }
+

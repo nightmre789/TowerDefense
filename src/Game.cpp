@@ -4,8 +4,8 @@
 
 using namespace std;
 
-Game::Game(unsigned width, unsigned height, string title) {
-    data -> window.create(VideoMode(width, height), title, Style::Close | Style::Titlebar);
+Game::Game(unsigned width, unsigned height, string const title) {
+    data -> window.create(VideoMode(width, height), title, Style::Close | Style::Titlebar | Style::Fullscreen );
     data -> stateHandler.pushState(static_cast<unique_ptr<State>> (new SplashState(data)));
     run();
 }
