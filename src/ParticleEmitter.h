@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "../util/Definitions.h"
+#include "util/Definitions.h"
 #include <cmath>
 
 using namespace sf;

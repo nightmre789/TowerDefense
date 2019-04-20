@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "State.h"
-#include "../../Game.h"
+#include "../Game.h"
 #include "../ParticleEmitter.h"
 #include "../Projectiles.h"
 
@@ -10,13 +10,13 @@ using namespace sf;
 
 class SplashState : public State {
     ParticleEmitter particles;
+    Projectiles projectiles;
     pGameData data;
     Clock clock;
     Sprite bg;
     Sprite title;
     Text loading;
-
-    Projectiles projectiles;
+    Sprite play;
 
 public:
     SplashState(pGameData data);
