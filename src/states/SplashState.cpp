@@ -1,9 +1,8 @@
 #include <utility>
 
-#include <utility>
-
 #include <iostream>
 #include "SplashState.h"
+#include "../util/Definitions.h"
 
 SplashState::SplashState(pGameData data) : data(std::move(data)), particles(2500)
 {}
@@ -20,7 +19,7 @@ void SplashState::init() {
     data -> assetHandler.loadTexture("PlayButtonHover", "assets/images/b_playHover.png");
     data -> assetHandler.loadTexture("PlayButtonActive", "assets/images/b_playActive.png");
 
-    play = new Button(100, 100, 150, 50,
+    play = new Button(SCREEN_WIDTH / 2 - 59, 550,
             data -> assetHandler.getTexture("PlayButtonIdle"),
             data -> assetHandler.getTexture("PlayButtonHover"),
             data -> assetHandler.getTexture("PlayButtonActive")
@@ -42,6 +41,10 @@ void SplashState::handleInput() {
         case Event::Closed:
             data -> window.close();
             break;
+        case Event::MouseButtonReleased:
+            if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
+                cout << "released" << endl;
+            break;
         default:
             break;
     }
@@ -60,7 +63,7 @@ void SplashState::update(float dt) {
                 state == 2 ? "Loading assets.." :
                 "Loading assets..."
                 );
-    else play -> update(static_cast<Vector2f> (Mouse::getPosition(data -> window)));
+    else play -> update(data -> window.mapPixelToCoords((Mouse::getPosition(data -> window))));
     particles.update(seconds(dt));
     projectiles.update(seconds(dt));
 }

@@ -20,9 +20,11 @@ class Button : public Drawable, public Transformable {
     Texture idle, hover, active;
 
 public:
-    Button(float x, float y, float width, float height, Texture &idle, Texture &hover, Texture &active);
+    Button(float x, float y, Texture &idle, Texture &hover, Texture &active);
 
     const bool isPressed() const;
+
+    bool contains(const Vector2f);
 
     void update(Vector2f mousePos);
 

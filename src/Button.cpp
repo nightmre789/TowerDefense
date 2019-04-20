@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(float x, float y, float width, float height, Texture &idle, Texture &hover, Texture &active)
+Button::Button(float x, float y, Texture &idle, Texture &hover, Texture &active)
                : idle(idle)
                , hover(hover)
                , active(active)
@@ -8,11 +8,15 @@ Button::Button(float x, float y, float width, float height, Texture &idle, Textu
     state = BTN_IDLE;
 
     shape.setPosition(Vector2f(x, y));
-    shape.setSize(Vector2f(width, height));
+    shape.setSize(Vector2f(idle.getSize()));
     shape.setTexture(&idle);
 }
 
 const bool Button::isPressed() const { return state == BTN_ACTIVE; }
+
+bool Button::contains(const Vector2f mousePos) {
+    return shape.getGlobalBounds().contains(mousePos);
+}
 
 void Button::draw(RenderTarget &target, RenderStates states) const {
     target.draw(shape);
@@ -20,24 +24,13 @@ void Button::draw(RenderTarget &target, RenderStates states) const {
 
 void Button::update(const Vector2f mousePos) {
     state = BTN_IDLE;
+    shape.setTexture(&idle);
     if (shape.getGlobalBounds().contains(mousePos)) {
         state = BTN_HOVER;
-        if (Mouse::isButtonPressed(Mouse::Left))
+        shape.setTexture(&hover);
+        if (Mouse::isButtonPressed(Mouse::Left)) {
             state = BTN_ACTIVE;
-    }
-
-    switch (state) {
-        case BTN_IDLE:
-            shape.setTexture(&idle);
-            break;
-        case BTN_HOVER:
-            shape.setTexture(&hover);
-            break;
-        case BTN_ACTIVE:
             shape.setTexture(&active);
-            break;
-        default:
-            shape.setTexture(&idle);
-            break;
+        }
     }
 }
