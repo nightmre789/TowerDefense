@@ -50,6 +50,9 @@ void SplashState::handleInput() {
 void SplashState::update(float dt) {
     float elapsed = clock.getElapsedTime().asMilliseconds();
     int state = (int) (elapsed / 200) % 4;
+    if(Mouse::isButtonPressed(Mouse::Left)){
+        projectiles.addProjectile();
+    }
     if (elapsed < 5000)
         loading.setString(
                 state == 0 ? "Loading assets" :
@@ -59,6 +62,7 @@ void SplashState::update(float dt) {
                 );
     else play -> update(static_cast<Vector2f> (Mouse::getPosition(data -> window)));
     particles.update(seconds(dt));
+    projectiles.update(seconds(dt));
 }
 
 void SplashState::draw(float dt) {
@@ -69,5 +73,7 @@ void SplashState::draw(float dt) {
     data -> window.draw(title);
     if (elapsed < 5) data -> window.draw(loading);
     else data -> window.draw(*play);
+    data-> window.draw(projectiles);
     data -> window.display();
+
 }

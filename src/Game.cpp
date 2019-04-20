@@ -5,7 +5,7 @@
 using namespace std;
 
 Game::Game(unsigned width, unsigned height, string const title) {
-    data -> window.create(VideoMode(width, height), title, Style::Close | Style::Titlebar);
+    data -> window.create(VideoMode(width, height), title, Style::Close |Style::Resize| Style::Titlebar);
     data -> stateHandler.pushState(static_cast<unique_ptr<State>> (new SplashState(data)));
     run();
 }
