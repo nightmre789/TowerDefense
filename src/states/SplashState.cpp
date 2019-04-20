@@ -42,6 +42,7 @@ void SplashState::handleInput() {
             data -> window.close();
             break;
         case Event::MouseButtonReleased:
+            projectiles.addProjectile();
             if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
                 cout << "released" << endl;
             break;
@@ -53,9 +54,6 @@ void SplashState::handleInput() {
 void SplashState::update(float dt) {
     float elapsed = clock.getElapsedTime().asMilliseconds();
     int state = (int) (elapsed / 200) % 4;
-    if(Mouse::isButtonPressed(Mouse::Left)){
-        projectiles.addProjectile();
-    }
     if (elapsed < 5000)
         loading.setString(
                 state == 0 ? "Loading assets" :
