@@ -1,3 +1,5 @@
+#include <utility>
+
 #pragma once
 
 #include "SFML/Graphics.hpp"
@@ -12,7 +14,7 @@ class Projectiles : public Drawable, public Transformable {
     struct Projectile {
 
         Projectile(CircleShape shape, Vector2f velocity, Time lifetime)
-                : shape(shape), velocity(velocity), lifetime(lifetime) {}
+                : shape(std::move(shape)), velocity(velocity), lifetime(lifetime) {}
 
         CircleShape shape;
         Vector2f velocity;
@@ -29,7 +31,7 @@ class Projectiles : public Drawable, public Transformable {
 public:
     Projectiles() = default;
 
-    void addProjectile(Vector2f aim, Texture &text) {
+    void addProjectile(Vector2f aim, Texture &t) {
         aim.y += 10.f;
         Vector2f norm;
         std::cout << aim.x << " " << aim.y << endl;
@@ -37,7 +39,7 @@ public:
         norm.x = aimDir.x / sqrt(static_cast<float>((pow(aimDir.x, 2) + pow(aimDir.y, 2))));
         norm.y = aimDir.y / sqrt(static_cast<float>((pow(aimDir.x, 2) + pow(aimDir.y, 2))));
         Projectile p(CircleShape(10.f), norm * static_cast<float>(50), seconds(30));
-        p.shape.setTexture(&text);
+        p.shape.setTexture(&t);
         projectiles.push_back(p);
     }
 
