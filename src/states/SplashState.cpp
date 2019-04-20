@@ -42,7 +42,7 @@ void SplashState::handleInput() {
             data -> window.close();
             break;
         case Event::MouseButtonReleased:
-            projectiles.addProjectile();
+            projectiles.addProjectile(data -> window.getPosition().x,data-> window.getPosition().y);
             if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
                 cout << "released" << endl;
             break;

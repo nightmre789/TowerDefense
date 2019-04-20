@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iostream>
 
+
 using namespace sf;
 using namespace std;
 
@@ -31,16 +32,18 @@ class Projectiles : public Drawable, public Transformable {
 public:
     Projectiles() = default;
 
-    void addProjectile() {
-        Vector2f aim;
-        aim.x=Mouse::getPosition().x;
-        aim.y=Mouse::getPosition().y - 160.f;
+    void addProjectile(int a,int b) {
+        Vector2f screen;
+        screen.x=a*1.5;
+        screen.y=b*1.25;
         Vector2f norm;
+        Vector2f aim;
+        aim.y = Mouse::getPosition().y-screen.y - 5.f;
+        aim.x = Mouse::getPosition().x-screen.x - 10.f;
         std::cout << aim.x << " " << aim.y << endl;
-        Vector2f aimDir = aim - Vector2f(0.f, 0.f);
-        norm.x = aimDir.x / sqrt(static_cast<float>((pow(aimDir.x, 2) + pow(aimDir.y, 2))));
-        norm.y = aimDir.y / sqrt(static_cast<float>((pow(aimDir.x, 2) + pow(aimDir.y, 2))));
-        Projectile p(CircleShape(10.f), norm * static_cast<float>(50), seconds(30));
+        norm.x = aim.x / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
+        norm.y = aim.y / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
+        Projectile p(CircleShape(10.f), norm * static_cast<float>(70), seconds(30));
         projectiles.push_back(p);
     }
 
