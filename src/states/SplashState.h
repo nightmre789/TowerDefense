@@ -5,6 +5,7 @@
 #include "../Game.h"
 #include "../ParticleEmitter.h"
 #include "../Projectiles.h"
+#include "../Button.h"
 
 using namespace sf;
 
@@ -16,10 +17,11 @@ class SplashState : public State {
     Sprite bg;
     Sprite title;
     Text loading;
-    Sprite play;
+    Button *play;
 
 public:
     SplashState(pGameData data);
+    ~SplashState();
 
     void init() override;
     void handleInput() override;
