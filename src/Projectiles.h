@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include <cmath>
 #include <iostream>
+#include "util/Collision.h"
 
 
 using namespace sf;
@@ -47,7 +48,7 @@ public:
         projectiles.push_back(p);
     }
 
-    void update(Time dt) {
+    void update(Time dt,bool col) {
         for (int i = 0; i < projectiles.size(); i++) {
             Projectile &p = projectiles[i];
 
@@ -58,6 +59,9 @@ public:
             }
 
             p.shape.setPosition(p.shape.getPosition() + p.velocity * dt.asSeconds());
+            if(Collision::CircleTest(projectiles,)){
+                p.lifetime = static_cast<int>(0);
+            }
         }
     }
 };

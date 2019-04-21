@@ -32,6 +32,9 @@ void SplashState::init() {
     loading.setFont(data -> assetHandler.getFont("Semilight"));
     loading.setCharacterSize(26);
     loading.setPosition(552, 552);
+    rectShape.setScale(Vector2f(50.f,50.f));
+    rectShape.setPosition(Vector2f(100.f,500.f));
+    rectShape.setColor(Color::Blue);
 }
 
 void SplashState::handleInput() {
