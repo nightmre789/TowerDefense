@@ -1,5 +1,4 @@
 #include "InputHandler.h"
-#include "../Projectiles.h"
 
 bool InputHandler::isClicked(Sprite sprite, Mouse::Button button, RenderWindow &window) {
     if (Mouse::isButtonPressed(button)) {
@@ -10,8 +9,6 @@ bool InputHandler::isClicked(Sprite sprite, Mouse::Button button, RenderWindow &
     }
     return false;
 }
-
-
 
 Vector2i InputHandler::getMousePos(RenderWindow &window) {
     return Mouse::getPosition(window);

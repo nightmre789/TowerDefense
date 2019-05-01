@@ -132,9 +132,9 @@ Ease
         elasticInOutDefault = Ease(elasticInOut(1, 0.3 * 1.5));
 
 Ease powIn(int N) {
-    return Ease([=] (double d) mutable -> double {
+    return {[=] (double d) mutable -> double {
         return getPowIn(d, N);
-    });
+    }};
 }
 
 Ease powOut(int N) {

@@ -58,7 +58,6 @@ public:
             if (p.lifetime <= Time::Zero)
                 resetParticle(i);
 
-
             vertices[i].position += p.velocity * dt.asSeconds();
             p.velocity.x += (rand() % 11 - 5) * .2;
             float ratio = p.lifetime.asSeconds() / lifetime.asSeconds();

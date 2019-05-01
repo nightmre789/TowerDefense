@@ -10,7 +10,6 @@ using namespace sf;
 using namespace std;
 
 class Projectiles : public Drawable, public Transformable {
-
     struct Projectile {
 
         Projectile(CircleShape shape, Vector2f velocity, Time lifetime)
@@ -33,6 +32,7 @@ public:
 
     void addProjectile() {
         Vector2f aim;
+        Vector2i f = Mouse::getPosition();
         aim.x=Mouse::getPosition().x;
         aim.y=Mouse::getPosition().y - 160.f;
         Vector2f norm;

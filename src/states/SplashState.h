@@ -6,6 +6,7 @@
 #include "../ParticleEmitter.h"
 #include "../Projectiles.h"
 #include "../Button.h"
+#include "../Map.h"
 
 using namespace sf;
 
@@ -18,6 +19,7 @@ class SplashState : public State {
     Sprite title;
     Text loading;
     Button *play;
+    Map *map;
 
 public:
     SplashState(pGameData data);

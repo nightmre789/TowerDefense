@@ -5,10 +5,12 @@
 #include "engine/StateHandler.h"
 #include "engine/AssetHandler.h"
 #include "engine/InputHandler.h"
+#include "Map.h"
 using namespace std;
 using namespace sf;
 
 struct GD {
+    Map *map;
     RenderWindow window;
     StateHandler stateHandler;
     AssetHandler assetHandler;
