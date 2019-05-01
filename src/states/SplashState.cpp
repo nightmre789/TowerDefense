@@ -32,9 +32,11 @@ void SplashState::init() {
     loading.setFont(data -> assetHandler.getFont("Semilight"));
     loading.setCharacterSize(26);
     loading.setPosition(552, 552);
-    rectShape.setScale(Vector2f(50.f,50.f));
-    rectShape.setPosition(Vector2f(100.f,500.f));
-    rectShape.setColor(Color::Blue);
+
+    rectShape.setSize(Vector2f(100.f,100.f));
+    rectShape.setPosition(Vector2f(500.f,500.f));
+    rectShape.setFillColor(Color::Blue);
+
 }
 
 void SplashState::handleInput() {
@@ -45,7 +47,7 @@ void SplashState::handleInput() {
             data -> window.close();
             break;
         case Event::MouseButtonReleased:
-            projectiles.addProjectile(data -> window.getPosition().x,data-> window.getPosition().y);
+            projectiles.addProjectile(data-> window.getPosition(),Mouse::getPosition(data->window));
             if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
                 cout << "released" << endl;
             break;
@@ -66,7 +68,7 @@ void SplashState::update(float dt) {
                 );
     else play -> update(data -> window.mapPixelToCoords((Mouse::getPosition(data -> window))));
     particles.update(seconds(dt));
-    projectiles.update(seconds(dt));
+    projectiles.update(seconds(dt),rectShape);
 }
 
 void SplashState::draw(float dt) {
@@ -77,7 +79,10 @@ void SplashState::draw(float dt) {
     data -> window.draw(title);
     if (elapsed < 5) data -> window.draw(loading);
     else data -> window.draw(*play);
+
+    data -> window.draw(rectShape);
     data-> window.draw(projectiles);
+
     data -> window.display();
 
 }

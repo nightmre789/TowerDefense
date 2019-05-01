@@ -18,7 +18,8 @@ class SplashState : public State {
     Sprite title;
     Text loading;
     Button *play;
-    Sprite rectShape;
+    RectangleShape rectShape;
+    bool col;
 
 public:
     SplashState(pGameData data);

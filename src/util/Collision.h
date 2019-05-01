@@ -23,7 +23,7 @@ public:
      *  @param Object2 The second sprite
      *  @AlphaLimit How opaque a pixel needs to be before a hit it registered
      */
-    static bool PixelPerfectTest(const sf::Sprite& Object1 ,const sf::Sprite& Object2, sf::Uint8 AlphaLimit = 127);
+    static bool PixelPerfectTest(const sf::CircleShape& Object1 ,const sf::Sprite& Object2, sf::Uint8 AlphaLimit = 127);
 
     /**
      *  Test for collision using circle collision dection

@@ -25,6 +25,7 @@ class Projectiles : public Drawable, public Transformable {
 
     vector<Projectile> projectiles;
 
+
     void draw(RenderTarget &target, RenderStates states) const override {
         for (const auto &projectile : projectiles)
             target.draw(projectile.shape);
@@ -33,14 +34,11 @@ class Projectiles : public Drawable, public Transformable {
 public:
     Projectiles() = default;
 
-    void addProjectile(int a,int b) {
-        Vector2f screen;
-        screen.x=a*1.5;
-        screen.y=b*1.25;
+    void addProjectile(Vector2i screen,Vector2i mouse){
         Vector2f norm;
         Vector2f aim;
-        aim.y = Mouse::getPosition().y-screen.y - 5.f;
-        aim.x = Mouse::getPosition().x-screen.x - 10.f;
+        aim.x=mouse.x-screen.x;
+        aim.y=mouse.y-screen.y;
         std::cout << aim.x << " " << aim.y << endl;
         norm.x = aim.x / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
         norm.y = aim.y / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
@@ -48,7 +46,7 @@ public:
         projectiles.push_back(p);
     }
 
-    void update(Time dt,bool col) {
+    void update(Time dt,RectangleShape& rectShape) {
         for (int i = 0; i < projectiles.size(); i++) {
             Projectile &p = projectiles[i];
 
@@ -59,8 +57,10 @@ public:
             }
 
             p.shape.setPosition(p.shape.getPosition() + p.velocity * dt.asSeconds());
-            if(Collision::CircleTest(projectiles,)){
-                p.lifetime = static_cast<int>(0);
+            if(projectiles[i].shape.getGlobalBounds().intersects(rectShape.getGlobalBounds())){
+                p.lifetime=Time::Zero;
+                rectShape.setFillColor(Color::Red);
+                cout<<"COLLIDED"<<endl;
             }
         }
     }
