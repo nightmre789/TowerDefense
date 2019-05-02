@@ -19,7 +19,7 @@ class SplashState : public State {
     Sprite title;
     Text loading;
     Button *play;
-    Map *map;
+    Sprite test;
 
 public:
     SplashState(pGameData data);

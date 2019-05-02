@@ -13,12 +13,13 @@ SplashState::~SplashState() {
 }
 
 void SplashState::init() {
-    data -> assetHandler.loadTexture("SplashBG", "assets/images/bg.png");
+    data -> assetHandler.loadTexture("SplashBG", "assets/images/map.png");
     data -> assetHandler.loadTexture("SplashTitle", "assets/images/title.png");
     data -> assetHandler.loadFont("Semilight", "assets/fonts/semilight.ttf");
     data -> assetHandler.loadTexture("PlayButtonIdle", "assets/images/b_playIdle.png");
     data -> assetHandler.loadTexture("PlayButtonHover", "assets/images/b_playHover.png");
     data -> assetHandler.loadTexture("PlayButtonActive", "assets/images/b_playActive.png");
+    data -> assetHandler.loadTexture("Virus", "assets/images/virus.png");
 
     play = new Button(SCREEN_WIDTH / 2.f - 59, 550,
             data -> assetHandler.getTexture("PlayButtonIdle"),
@@ -29,17 +30,18 @@ void SplashState::init() {
     data -> map = new Map(bg, [=] (float t) mutable -> Vector2f {
         auto x = static_cast<float> (sqrt(112.5));
         return
-            t <= 14.13 ? Vector2f(15 * t, 600) :
-            t <= 20 ? Vector2f(212, -15 * t + 812) :
-            t <= 41.2 ? Vector2f(x * t, -x * t + 723) :
-            t <= 53 ? Vector2f(15 * t - 180, 286) :
-            t <= 82.4 ? Vector2f(x * t + 52, x * t - 275) :
-            t <= 90 ? Vector2f(15 * t - 310, 600) :
-            t <= 120 ? Vector2f(1040, -15 * t + 1950) :
-            t <= 160 ? Vector2f (15 * t - 760, 150) :
+            t <= 14.13 ? Vector2f(15 * t, 500) :
+            t <= 20 ? Vector2f(212, -15 * t + 712) :
+            t <= 41.2 ? Vector2f(x * t, -x * t + 623) :
+            t <= 53 ? Vector2f(15 * t - 180, 186) :
+            t <= 82.4 ? Vector2f(x * t + 52, x * t - 375) :
+            t <= 90 ? Vector2f(15 * t - 310, 500) :
+            t <= 120 ? Vector2f(1040, -15 * t + 1850) :
+            t <= 160 ? Vector2f (15 * t - 760, 50) :
             Vector2f(1280, 150);
     });
 
+    test.setTexture(data -> assetHandler.getTexture("Virus"));
     bg.setTexture(data -> assetHandler.getTexture("SplashBG"));
     title.setTexture(data -> assetHandler.getTexture("SplashTitle"));
 
@@ -56,7 +58,7 @@ void SplashState::handleInput() {
             data -> window.close();
             break;
         case Event::MouseButtonReleased:
-            projectiles.addProjectile(data -> window.getPosition().x,data-> window.getPosition().y);
+            projectiles.addProjectile(Mouse::getPosition(data -> window), 150.f);
             if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
                 cout << "released" << endl;
             break;
@@ -66,8 +68,8 @@ void SplashState::handleInput() {
 }
 
 void SplashState::update(float dt) {
-    Time t;
     float elapsed = clock.getElapsedTime().asMilliseconds();
+    float moveTime = clock.getElapsedTime().asSeconds() * 5;
     int state = (int) (elapsed / 200) % 4;
     if (elapsed < 5000)
         loading.setString(
@@ -79,7 +81,7 @@ void SplashState::update(float dt) {
     else play -> update(data -> window.mapPixelToCoords((Mouse::getPosition(data -> window))));
     particles.update(seconds(dt));
     projectiles.update(seconds(dt));
-    cout << data -> map.
+    test.setPosition(data -> map -> movement(moveTime));
 }
 
 void SplashState::draw(float dt) {
@@ -90,6 +92,7 @@ void SplashState::draw(float dt) {
     data -> window.draw(title);
     if (elapsed < 5) data -> window.draw(loading);
     else data -> window.draw(*play);
-    data-> window.draw(projectiles);
+    data -> window.draw(projectiles);
+    data -> window.draw(test);
     data -> window.display();
 }

@@ -8,9 +8,8 @@ using namespace sf;
 
 class Map {
     Sprite bg;
-    std::function<Vector2f(float)> movement;
-
 public:
+    std::function<Vector2f(float)> movement;
     Map(Sprite &bg, std::function<Vector2f(float)> movement)
         : bg(bg)
         , movement(std::move(movement))

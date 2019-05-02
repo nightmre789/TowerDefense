@@ -32,18 +32,10 @@ class Projectiles : public Drawable, public Transformable {
 public:
     Projectiles() = default;
 
-    void addProjectile(int a,int b) {
-        Vector2f screen;
-        screen.x=a*1.5;
-        screen.y=b*1.25;
-        Vector2f norm;
-        Vector2f aim;
-        aim.y = Mouse::getPosition().y-screen.y - 5.f;
-        aim.x = Mouse::getPosition().x-screen.x - 10.f;
-        std::cout << aim.x << " " << aim.y << endl;
-        norm.x = aim.x / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
-        norm.y = aim.y / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
-        Projectile p(CircleShape(10.f), norm * static_cast<float>(70), seconds(30));
+    void addProjectile(Vector2i mousePos, float speed) {
+        auto mag = static_cast<float> (sqrt(pow(mousePos.x, 2) + pow(mousePos.y, 2)));
+        Vector2f unit(Vector2f(mousePos) / mag);
+        Projectile p(CircleShape(10.f), speed * unit, seconds(10));
         projectiles.push_back(p);
     }
 
