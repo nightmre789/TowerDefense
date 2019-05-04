@@ -10,19 +10,18 @@ void StateHandler::popState() { this -> pop = true; }
 
 void StateHandler::updateState() {
     if (pop && !states.empty()) {
-        pop = false;
         states.pop();
-        if (states.empty()) states.top() -> resume();
-    }
-    else if (push) {
-        push = false;
+        if (!states.empty()) states.top() -> resume();
+    } pop = false;
+
+    if (push) {
         if (!states.empty()) {
             if (override) states.pop();
             else states.top() -> pause();
         }
         states.push(move(toPush));
         states.top() -> init();
-    }
+    } push = false;
 }
 
 pState &StateHandler::getActiveState() { return states.top(); }

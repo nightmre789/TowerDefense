@@ -7,22 +7,21 @@
 #include "../Projectiles.h"
 #include "../Button.h"
 #include "../Map.h"
+#include "../Towers.h"
 
 using namespace sf;
 
-class SplashState : public State {
-    ParticleEmitter particles;
-    Projectiles projectiles;
+class GameState : public State {
     pGameData data;
     Clock clock;
-    Sprite bg;
-    Sprite title;
-    Text loading;
-    Button *play;
+    Sprite virus;
+    Map *map;
+    Towers towers;
+    Projectiles projectiles;
 
 public:
-    SplashState(pGameData data);
-    ~SplashState();
+    GameState(pGameData data);
+    ~GameState();
 
     void init() override;
     void handleInput() override;

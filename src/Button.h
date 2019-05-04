@@ -24,7 +24,7 @@ public:
 
     const bool isPressed() const;
 
-    bool contains(const Vector2f);
+    bool contains(Vector2f);
 
     void update(Vector2f mousePos);
 

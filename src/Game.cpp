@@ -1,12 +1,13 @@
 #include "Game.h"
 #include "states/SplashState.h"
+#include "states/GameState.h"
 #include <iostream>
 
 using namespace std;
 
 Game::Game(unsigned width, unsigned height, string const title) {
-    data -> window.create(VideoMode(width, height), title, Style::Close |Style::Resize| Style::Titlebar);
-    data -> stateHandler.pushState(static_cast<unique_ptr<State>> (new SplashState(data)));
+    data -> window.create(VideoMode(width, height), title, Style::Close | Style::Titlebar);
+    data -> stateHandler.pushState(pState (new SplashState(data)));
     run();
 }
 
@@ -19,6 +20,5 @@ void Game::run() {
 
         data -> stateHandler.getActiveState() -> draw (dt);
         data -> window.clear();
-//        cout << "FPS: " << 1.f / gameClock.restart().asSeconds() << endl;
     }
 }

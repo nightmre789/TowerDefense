@@ -3,23 +3,30 @@
 #include <cmath>
 #include <iostream>
 #include "SplashState.h"
+#include "GameState.h"
 #include "../util/Definitions.h"
 
 SplashState::SplashState(pGameData data) : data(std::move(data)), particles(2500)
 {}
 
 SplashState::~SplashState() {
+    cout << "deleting";
     delete play;
 }
 
 void SplashState::init() {
-    data -> assetHandler.loadTexture("SplashBG", "assets/images/map.png");
+    data -> assetHandler.loadTexture("SplashBG", "assets/images/bg.png");
     data -> assetHandler.loadTexture("SplashTitle", "assets/images/title.png");
     data -> assetHandler.loadFont("Semilight", "assets/fonts/semilight.ttf");
     data -> assetHandler.loadTexture("PlayButtonIdle", "assets/images/b_playIdle.png");
     data -> assetHandler.loadTexture("PlayButtonHover", "assets/images/b_playHover.png");
     data -> assetHandler.loadTexture("PlayButtonActive", "assets/images/b_playActive.png");
+    data -> assetHandler.loadTexture("Burney", "assets/images/burney.png");
+
+    data -> assetHandler.loadTexture("Map", "assets/images/map.png");
     data -> assetHandler.loadTexture("Virus", "assets/images/virus.png");
+    data -> assetHandler.loadTexture("CDKey", "assets/images/CDKey.png");
+    data -> assetHandler.loadTexture("CDKeyAttack", "assets/images/CDKey_attack.png");
 
     play = new Button(SCREEN_WIDTH / 2.f - 59, 550,
             data -> assetHandler.getTexture("PlayButtonIdle"),
@@ -27,21 +34,6 @@ void SplashState::init() {
             data -> assetHandler.getTexture("PlayButtonActive")
             );
 
-    data -> map = new Map(bg, [=] (float t) mutable -> Vector2f {
-        auto x = static_cast<float> (sqrt(112.5));
-        return
-            t <= 14.13 ? Vector2f(15 * t, 500) :
-            t <= 20 ? Vector2f(212, -15 * t + 712) :
-            t <= 41.2 ? Vector2f(x * t, -x * t + 623) :
-            t <= 53 ? Vector2f(15 * t - 180, 186) :
-            t <= 82.4 ? Vector2f(x * t + 52, x * t - 375) :
-            t <= 90 ? Vector2f(15 * t - 310, 500) :
-            t <= 120 ? Vector2f(1040, -15 * t + 1850) :
-            t <= 160 ? Vector2f (15 * t - 760, 50) :
-            Vector2f(1280, 150);
-    });
-
-    test.setTexture(data -> assetHandler.getTexture("Virus"));
     bg.setTexture(data -> assetHandler.getTexture("SplashBG"));
     title.setTexture(data -> assetHandler.getTexture("SplashTitle"));
 
@@ -58,18 +50,19 @@ void SplashState::handleInput() {
             data -> window.close();
             break;
         case Event::MouseButtonReleased:
-            projectiles.addProjectile(Mouse::getPosition(data -> window), 150.f);
+            Sprite s(data -> assetHandler.getTexture("Burney"));
+            projectiles.addProjectile(s,
+                    Vector2f(640, 360),
+                    Vector2f(Mouse::getPosition(data -> window)),
+                    150.f, 10.f);
             if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
-                cout << "released" << endl;
-            break;
-        default:
+                data -> stateHandler.pushState(pState(new GameState(data)), true);
             break;
     }
 }
 
 void SplashState::update(float dt) {
     float elapsed = clock.getElapsedTime().asMilliseconds();
-    float moveTime = clock.getElapsedTime().asSeconds() * 5;
     int state = (int) (elapsed / 200) % 4;
     if (elapsed < 5000)
         loading.setString(
@@ -80,8 +73,11 @@ void SplashState::update(float dt) {
                 );
     else play -> update(data -> window.mapPixelToCoords((Mouse::getPosition(data -> window))));
     particles.update(seconds(dt));
-    projectiles.update(seconds(dt));
-    test.setPosition(data -> map -> movement(moveTime));
+    projectiles.update(dt);
+    Image i = bg.getTexture() -> copyToImage();
+    int r = i.getPixel(600, 200).a;
+    cout << r << endl;
+//    cout << c.r << ", " << c.g << ", " << c.b << endl;
 }
 
 void SplashState::draw(float dt) {
@@ -93,6 +89,5 @@ void SplashState::draw(float dt) {
     if (elapsed < 5) data -> window.draw(loading);
     else data -> window.draw(*play);
     data -> window.draw(projectiles);
-    data -> window.draw(test);
     data -> window.display();
 }
