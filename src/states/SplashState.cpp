@@ -4,6 +4,8 @@
 #include "SplashState.h"
 #include "../util/Definitions.h"
 
+
+
 SplashState::SplashState(pGameData data) : data(std::move(data)), particles(2500)
 {}
 
@@ -40,49 +42,53 @@ void SplashState::init() {
 }
 
 void SplashState::handleInput() {
-    Event e {};
-    while (data -> window.pollEvent(e))
-    switch(e.type) {
-        case Event::Closed:
-            data -> window.close();
-            break;
-        case Event::MouseButtonReleased:
-            projectiles.addProjectile(data-> window.getPosition(),Mouse::getPosition(data->window));
-            if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
-                cout << "released" << endl;
-            break;
-        default:
-            break;
+    Event e{};
+    while (data->window.pollEvent(e)) {
+        switch (e.type) {
+            case Event::Closed:
+                data->window.close();
+                break;
+            case Event::MouseButtonReleased:
+//            for(int i = 0;i < Tower::TowNum; i++){
+//                towers[i].projectiles.addProjectile(Mouse::getPosition(data->window));    //fix addprojectile
+
+                if (play->contains(data->window.mapPixelToCoords(Mouse::getPosition(data->window))))
+                    cout << "released" << endl;
+                break;
+            default:
+                break;
+        }
     }
-}
 
-void SplashState::update(float dt) {
-    float elapsed = clock.getElapsedTime().asMilliseconds();
-    int state = (int) (elapsed / 200) % 4;
-    if (elapsed < 5000)
-        loading.setString(
-                state == 0 ? "Loading assets" :
-                state == 1 ? "Loading assets." :
-                state == 2 ? "Loading assets.." :
-                "Loading assets..."
-                );
-    else play -> update(data -> window.mapPixelToCoords((Mouse::getPosition(data -> window))));
-    particles.update(seconds(dt));
-    projectiles.update(seconds(dt),rectShape);
-}
 
-void SplashState::draw(float dt) {
-    float elapsed = clock.getElapsedTime().asSeconds();
-    data -> window.clear(Color::Black);
-    data -> window.draw(bg);
-    if (elapsed > 0.5f) data -> window.draw(particles);
-    data -> window.draw(title);
-    if (elapsed < 5) data -> window.draw(loading);
-    else data -> window.draw(*play);
+    void SplashState::update(float dt) {
+        float elapsed = clock.getElapsedTime().asMilliseconds();
+        int state = (int) (elapsed / 200) % 4;
+        if (elapsed < 5000)
+            loading.setString(
+                    state == 0 ? "Loading assets" :
+                    state == 1 ? "Loading assets." :
+                    state == 2 ? "Loading assets.." :
+                    "Loading assets..."
+            );
+        else play->update(data->window.mapPixelToCoords((Mouse::getPosition(data->window))));
+        particles.update(seconds(dt));
 
-    data -> window.draw(rectShape);
-    data-> window.draw(projectiles);
 
-    data -> window.display();
+    }
 
+    void SplashState::draw(float dt) {
+        float elapsed = clock.getElapsedTime().asSeconds();
+        data->window.clear(Color::Black);
+        data->window.draw(bg);
+        if (elapsed > 0.5f) data->window.draw(particles);
+        data->window.draw(title);
+        if (elapsed < 5) data->window.draw(loading);
+        else data->window.draw(*play);
+        data->window.draw(rectShape);
+        data->window.draw(projectiles);
+
+        data->window.display();
+
+    }
 }

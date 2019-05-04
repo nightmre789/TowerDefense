@@ -3,6 +3,7 @@
 #include "../states/State.h"
 #include <memory>
 #include <stack>
+
 using namespace std;
 
 typedef unique_ptr<State> pState;

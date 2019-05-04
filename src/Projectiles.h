@@ -13,19 +13,6 @@ using namespace std;
 
 class Projectiles : public Drawable, public Transformable {
 
-    struct Projectile {
-
-        Projectile(CircleShape shape, Vector2f velocity, Time lifetime)
-                : shape(std::move(shape)), velocity(velocity), lifetime(lifetime) {}
-
-        CircleShape shape;
-        Vector2f velocity;
-        Time lifetime;
-    };
-
-    vector<Projectile> projectiles;
-
-
     void draw(RenderTarget &target, RenderStates states) const override {
         for (const auto &projectile : projectiles)
             target.draw(projectile.shape);
@@ -34,17 +21,26 @@ class Projectiles : public Drawable, public Transformable {
 public:
     Projectiles() = default;
 
-    void addProjectile(Vector2i screen,Vector2i mouse){
-        Vector2f norm;
-        Vector2f aim;
-        aim.x=mouse.x-screen.x;
-        aim.y=mouse.y-screen.y;
-        std::cout << aim.x << " " << aim.y << endl;
-        norm.x = aim.x / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
-        norm.y = aim.y / sqrt(static_cast<float>((pow(aim.x, 2) + pow(aim.y, 2))));
-        Projectile p(CircleShape(10.f), norm * static_cast<float>(70), seconds(30));
-        projectiles.push_back(p);
+    struct Projectile {
+
+        Projectile(Sprite shape, Vector2f velocity, Time lifetime)
+                : shape(std::move(shape)), velocity(velocity), lifetime(lifetime) {}
+
+        Sprite shape;
+        Vector2f velocity;
+        Time lifetime;
+    };
+
+    vector<Projectile> projectiles;
+
+    void addProjectile(Vector2i mouse,Vector2i position) {
+        Vector2f unit;
+        unit.x=mouse.x - position.x/ (sqrt(pow(mouse.x,2)+pow(mouse.y,2)));
+        unit.y=mouse.y - position.y/ (sqrt(pow(mouse.x,2)+pow(mouse.y,2)));
+//        Projectile p(Sprite shape,Vector2f unit,Time as);
+//        projectiles.push_back(p);  //fix this part
     }
+
 
     void update(Time dt,RectangleShape& rectShape) {
         for (int i = 0; i < projectiles.size(); i++) {
@@ -62,6 +58,11 @@ public:
                 rectShape.setFillColor(Color::Red);
                 cout<<"COLLIDED"<<endl;
             }
+        }
+    }
+    void draw(RenderTarget &target, RenderStates states){
+        for(int i=0;i<projectiles.size();i++){
+            //
         }
     }
 };

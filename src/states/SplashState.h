@@ -4,14 +4,15 @@
 #include "State.h"
 #include "../Game.h"
 #include "../ParticleEmitter.h"
-#include "../Projectiles.h"
 #include "../Button.h"
+#include "../util/Tower.h"
+
 
 using namespace sf;
 
 class SplashState : public State {
     ParticleEmitter particles;
-    Projectiles projectiles;
+    Tower towers[5];
     pGameData data;
     Clock clock;
     Sprite bg;
@@ -19,6 +20,7 @@ class SplashState : public State {
     Text loading;
     Button *play;
     RectangleShape rectShape;
+    Enemy enemies[5];
     bool col;
 
 public:
