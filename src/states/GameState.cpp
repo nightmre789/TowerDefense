@@ -6,7 +6,7 @@
 #include "GameState.h"
 #include "../util/Definitions.h"
 
-GameState::GameState(pGameData data) : data(std::move(data))
+GameState::GameState(pGameData data) : data(std::move(data)), level(1)
 {}
 
 GameState::~GameState() = default;
@@ -24,7 +24,10 @@ void GameState::init() {
             t <= 120    ? Vector2f(1040, -15 * t + 1850) :
             t <= 160    ? Vector2f(15 * t - 760, 50) :
             Vector2f(1280, 150);
-    });
+        }, 160
+    );
+
+    viruses = new Viruses(map -> movement, map -> complete);
 
     alpha.setTexture(data -> assetHandler.getTexture("AlphaMap"));
     alphaMap = alpha.getTexture() -> copyToImage();
@@ -163,10 +166,38 @@ void GameState::handleInput() {
 }
 
 void GameState::update(float dt) {
-    float elapsed = clock.getElapsedTime().asMilliseconds();
+    float elapsed = clock.getElapsedTime().asSeconds();
+    static float count = 0;
     towers.update(dt, data -> inputHandler.getMousePos(data -> window));
     projectiles.update(dt);
-//    virus.setPosition(map -> movement(clock.getElapsedTime().asSeconds() * 5));
+    viruses -> update(dt);
+
+    int i = 0, j = 0;
+
+    for (auto &virus : viruses -> viruses) {
+        for (auto &projectile : projectiles.projectiles) {
+            if (projectile.sprite.getGlobalBounds().intersects(virus.sprite.getGlobalBounds())) {
+                projectiles.projectiles.erase(projectiles.projectiles.begin() + j);
+                viruses -> viruses.erase(viruses -> viruses.begin() + i);
+                cout << "PEW PEW BITCH" << endl;
+            } j++;
+        } i++;
+    }
+
+    switch(level) {
+        case 1:
+            if (elapsed < 20) {
+                if (count > 10) {
+                    count = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Virus")), 13, 100);
+                } else count += dt;
+            } else level = 2;
+            break;
+        case 2:
+            break;
+        default:
+            break;
+    }
 }
 
 void GameState::draw(float dt) {
@@ -180,6 +211,8 @@ void GameState::draw(float dt) {
 
     data -> window.draw(towers);
     data -> window.draw(projectiles);
+
+    data -> window.draw(*viruses);
 
     data -> window.draw(towerBar);
     data -> window.draw(CDIcon);

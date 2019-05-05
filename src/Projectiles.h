@@ -24,14 +24,14 @@ class Projectiles : public Drawable, public Transformable {
         Time lifetime;
     };
 
-    vector<Projectile> projectiles;
-
     void draw(RenderTarget &target, RenderStates states) const override {
         for (const auto &projectile : projectiles)
             target.draw(projectile.sprite);
     }
 
 public:
+    vector<Projectile> projectiles;
+
     Projectiles() = default;
 
     void addProjectile(Sprite &sprite, Vector2f start, Vector2f end, float speed, float lifetime) {

@@ -16,9 +16,12 @@ class Map : public Drawable {
     }
 
 public:
+    int complete;
     function<Vector2f(float)> movement;
-    Map(Sprite *bg, function<Vector2f(float)> movement)
+
+    Map(Sprite *bg, function<Vector2f(float)> movement, int complete)
         : bg(std::move(*bg))
         , movement(std::move(movement))
+        , complete(complete)
     {}
 };

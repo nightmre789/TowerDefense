@@ -31,6 +31,7 @@ class Towers : public Drawable, public Transformable {
             , reload(0.f)
             , radius(CircleShape(radius))
         {}
+
         int range, damage;
         CircleShape radius;
         float fireRate, reload;
@@ -42,7 +43,7 @@ class Towers : public Drawable, public Transformable {
     vector<Tower> towers;
 
     void draw(RenderTarget &target, RenderStates states) const override {
-        for (const auto &tower : towers){
+        for (const auto &tower : towers) {
             if (tower.reload <= tower.fireRate) target.draw(tower.reloadSprite);
             else target.draw(tower.sprite);
         }
@@ -95,7 +96,7 @@ public:
     static float getFireRate(short unsigned towerType) {
         switch(towerType) {
             case CDKEY: return 7.5;
-            case MOUSE: return 2.5;
+            case MOUSE: return 6.5;
             case FAN: return 5.5;
             default: return 0;
         }
