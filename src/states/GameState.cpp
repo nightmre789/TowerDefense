@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <string.h>
 #include "GameState.h"
 #include "../util/Definitions.h"
 
@@ -44,7 +45,6 @@ void GameState::init() {
     towerSprites[0] = &CDIcon;
     towerSprites[1] = &mouseIcon;
     towerSprites[2] = &fanIcon;
-
 }
 
 void GameState::handleInput() {
@@ -75,31 +75,62 @@ void GameState::handleInput() {
                 break;
 
             case Event::MouseButtonReleased:
-                if (drag) pSprite -> setPosition(initial);
+
                 if (!alphaMap.getPixel(mousePos.x, mousePos.y).toInteger() && drag) {
                     int radius = Towers::getRadius(i);
                     int damage = Towers::getDamage(i);
                     float fireRate = Towers::getFireRate(i);
                     Sprite s = *pSprite;
-                    IntRect bounds = static_cast<IntRect> (pSprite -> getLocalBounds());
                     switch(i) {
+                        case CDKEY:
+
+                            break;
+
                         case MOUSE:
-                            for (int j = bounds.left; j < bounds.width; j++)
-                                for (int k = bounds.top; k < bounds.height; k++)
-                                    alphaMap.setPixel(j, k, Color(10, 10, 10, 255));
-                            towers.addTower(Vector2f(mousePos), s, [=] () -> bool {
-                                Sprite attack(data -> assetHandler.getTexture("MouseAttack"));
-                                projectiles.addProjectile(
-                                        attack,
-                                        Vector2f(mousePos),
-                                        Vector2f(Mouse::getPosition(data -> window)),
-                                        100, 10
-                                );
-                                return true;
-                            }, radius, damage, fireRate);
+                            towers.addTower(Vector2f(mousePos), s, s,
+                                    [=] () -> bool {
+                                        Sprite attack(data -> assetHandler.getTexture("MouseAttack"));
+                                        projectiles.addProjectile(
+                                            attack,
+                                            Vector2f(mousePos),
+                                            Vector2f(Mouse::getPosition(data -> window)),
+                                            100, 10
+                                        );
+                                        return true;
+                                    }, radius, damage, fireRate);
+                            break;
+
+                        case FAN:
+                            towers.addTower(Vector2f(mousePos), s, s,
+                                    [=] () -> bool {
+                                        for (int j = 1; j <= 7; j++) {
+                                            string text("FanAttack");
+                                            text.append(to_string(j));
+                                            Sprite attack(data -> assetHandler.getTexture(text));
+                                            projectiles.addProjectile(
+                                                    attack,
+                                                    Vector2f(mousePos),
+                                                    Vector2f(Vector2f(mousePos)
+                                                    + Vector2f((float) sin(PI_2 / 7 * (j - 1)), (float) cos(PI_2 / 7 * (j - 1)))),
+                                                    50, 2
+                                            );
+                                        }
+                                        return true;
+                                    }, radius, damage, fireRate);
+                            break;
+
                         default: break;
                     }
+
+                    IntRect bounds = static_cast<IntRect> (pSprite -> getGlobalBounds());
+                    for (int j = bounds.left - 10; j < bounds.left + bounds.width + 10; j++)
+                        for (int k = bounds.top - 10; k < bounds.top + bounds.height + 10; k++)
+                            if ((j >= 0 && j <= 1280) && (k >= 0 && k <=720))
+                                alphaMap.setPixel(j, k, Color(10, 10, 10, 100));
                 }
+
+                if (drag) pSprite -> setPosition(initial);
+
                 drag = false;
                 drawRange = false;
                 for (i = 0; i < 3; i++) {
@@ -114,7 +145,6 @@ void GameState::handleInput() {
 
             case Event::MouseMoved:
                 if (drag) {
-                    cout << i << endl;
                     drawRange = true;
                     pSprite -> setPosition(Vector2f(mousePos));
                     range.setRadius(Towers::getRadius(i));
@@ -134,7 +164,7 @@ void GameState::handleInput() {
 
 void GameState::update(float dt) {
     float elapsed = clock.getElapsedTime().asMilliseconds();
-    towers.update(dt);
+    towers.update(dt, data -> inputHandler.getMousePos(data -> window));
     projectiles.update(dt);
 //    virus.setPosition(map -> movement(clock.getElapsedTime().asSeconds() * 5));
 }

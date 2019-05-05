@@ -36,7 +36,7 @@ public:
 
     void addProjectile(Sprite &sprite, Vector2f start, Vector2f end, float speed, float lifetime) {
         Vector2f aim(end - start);
-        float rotation = atan(aim.x / aim.y) * (float) - (180 / PI);
+        float rotation = atan2(aim.y, aim.x) * (float) (180 / PI) + 90;
         auto mag = static_cast<float> (sqrt(pow(aim.x, 2) + pow(aim.y, 2)));
         Vector2f unit(aim.x / mag, aim.y  / mag);
         Projectile p(sprite, speed * unit, seconds(lifetime));

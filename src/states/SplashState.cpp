@@ -32,7 +32,14 @@ void SplashState::init() {
     data -> assetHandler.loadTexture("CDKey", "assets/images/cdkey.png");
     data -> assetHandler.loadTexture("CDKeyAttack", "assets/images/cdkeyAttack.png");
     data -> assetHandler.loadTexture("Fan", "assets/images/fan.png");
-    data -> assetHandler.loadTexture("FanAttack", "assets/images/fanAttack.png");
+    data -> assetHandler.loadTexture("FanAttack1", "assets/images/fanAttack1.png");
+    data -> assetHandler.loadTexture("FanAttack2", "assets/images/fanAttack2.png");
+    data -> assetHandler.loadTexture("FanAttack3", "assets/images/fanAttack3.png");
+    data -> assetHandler.loadTexture("FanAttack4", "assets/images/fanAttack4.png");
+    data -> assetHandler.loadTexture("FanAttack5", "assets/images/fanAttack5.png");
+    data -> assetHandler.loadTexture("FanAttack6", "assets/images/fanAttack6.png");
+    data -> assetHandler.loadTexture("FanAttack7", "assets/images/fanAttack7.png");
+    data -> assetHandler.loadTexture("FanReload", "assets/images/fanReload.png");
     data -> assetHandler.loadTexture("Mouse", "assets/images/mouse.png");
     data -> assetHandler.loadTexture("MouseAttack", "assets/images/mouseAttack.png");
 
