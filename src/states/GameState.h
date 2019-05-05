@@ -14,11 +14,11 @@ using namespace sf;
 class GameState : public State {
     pGameData data;
     Clock clock;
-    Sprite virus;
+    Sprite virus, towerSprites[3];
     Map *map;
     Towers towers;
     Projectiles projectiles;
-
+    Image alphaMap;
 public:
     GameState(pGameData data);
     ~GameState();

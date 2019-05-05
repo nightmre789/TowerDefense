@@ -27,6 +27,7 @@ void SplashState::init() {
     data -> assetHandler.loadTexture("Virus", "assets/images/virus.png");
     data -> assetHandler.loadTexture("CDKey", "assets/images/CDKey.png");
     data -> assetHandler.loadTexture("CDKeyAttack", "assets/images/CDKey_attack.png");
+    data -> assetHandler.loadTexture("AlphaMap", "assets/images/alpha.png");
 
     play = new Button(SCREEN_WIDTH / 2.f - 59, 550,
             data -> assetHandler.getTexture("PlayButtonIdle"),

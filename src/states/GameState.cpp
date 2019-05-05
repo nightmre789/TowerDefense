@@ -14,11 +14,9 @@ GameState::~GameState() = default;
 
 void GameState::init() {
     Sprite tower(data -> assetHandler.getTexture("CDKey"));
-    tower.setScale(0.5f, 0.5f);
     towers.addTower(tower, Vector2f(500, 200),
             [=] () -> bool {
                 Sprite attack(data -> assetHandler.getTexture("CDKeyAttack"));
-                attack.setScale(0.5f, 0.5f);
                 projectiles.addProjectile(
                         attack,
                         Vector2f(500, 200),
@@ -44,6 +42,7 @@ void GameState::init() {
             t <= 160    ? Vector2f(15 * t - 760, 50) :
             Vector2f(1280, 150);
     });
+    alphaMap = data -> assetHandler.getTexture("AlphaMap").copyToImage();
 }
 
 void GameState::handleInput() {
@@ -76,7 +75,7 @@ void GameState::handleInput() {
             case Event::MouseMoved:
                 if (drag) {
                     pSprite -> setPosition(Vector2f(Mouse::getPosition(data -> window)) - Vector2f(35.f, 35.f));
-
+                    cout << alphaMap.getPixel(Mouse::getPosition(data -> window).x, Mouse::getPosition(data -> window).y).toInteger() << endl;
                 }
                 break;
             default:
