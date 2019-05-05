@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 #include "State.h"
-#include "../Game.h"
 #include "../ParticleEmitter.h"
 #include "../Projectiles.h"
 #include "../Button.h"

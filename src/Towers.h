@@ -46,7 +46,7 @@ class Towers : public Drawable, public Transformable {
 public:
     Towers() = default;
 
-    void addTower(Sprite &s, Vector2f position, const function<bool(void)> &fire, int radius, int damage, float fireRate) {
+    void addTower(Vector2f position, Sprite &s, const function<bool(void)> &fire, int radius, int damage, float fireRate) {
         s.setOrigin(s.getLocalBounds().width / 2.f, s.getLocalBounds().height / 2.f);
         s.setPosition(position);
         Tower t(position, s, fire, radius, damage, fireRate);
@@ -64,8 +64,26 @@ public:
     static int getRadius(short unsigned towerType) {
         switch(towerType) {
             case CDKEY: return 70;
-            case MOUSE: return 5;
+            case MOUSE: return 50;
             case FAN: return 200;
+            default: return 0;
+        }
+    }
+
+    static int getDamage(short unsigned towerType) {
+        switch(towerType) {
+            case CDKEY: return 50;
+            case MOUSE: return 20;
+            case FAN: return 15;
+            default: return 0;
+        }
+    }
+
+    static float getFireRate(short unsigned towerType) {
+        switch(towerType) {
+            case CDKEY: return 7.5;
+            case MOUSE: return 2.5;
+            case FAN: return 5.5;
             default: return 0;
         }
     }

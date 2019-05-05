@@ -3,9 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include "GameState.h"
-#include "GameState.h"
 #include "../util/Definitions.h"
-#include "../Towers.h"
 
 GameState::GameState(pGameData data) : data(std::move(data))
 {}
@@ -13,21 +11,6 @@ GameState::GameState(pGameData data) : data(std::move(data))
 GameState::~GameState() = default;
 
 void GameState::init() {
-    Sprite tower(data -> assetHandler.getTexture("CDKey"));
-    towers.addTower(tower, Vector2f(500, 200),
-            [=] () -> bool {
-                Sprite attack(data -> assetHandler.getTexture("CDKeyAttack"));
-                projectiles.addProjectile(
-                        attack,
-                        Vector2f(500, 200),
-                        Vector2f(Mouse::getPosition(data -> window)),
-                        50, 10
-                        );
-                return true;
-            },
-            300, 400, 7
-    );
-
     map = new Map(new Sprite((data -> assetHandler.getTexture("Map"))), [] (float t) -> Vector2f {
         auto x = static_cast<float> (sqrt(112.5));
         return
@@ -70,43 +53,69 @@ void GameState::handleInput() {
     static Vector2f initial;
     static short unsigned i;
 
+    Vector2i mousePos(data -> inputHandler.getMousePos(data -> window));
+
     Event e {};
     while (data -> window.pollEvent(e))
         switch(e.type) {
             case Event::Closed:
                 data -> window.close();
                 break;
+
             case Event::MouseButtonPressed:
                 for (i = 0; i < 3; i++) {
                     pSprite = towerSprites[i];
-                    if (pSprite -> getGlobalBounds().contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window)))) {
+                    if (pSprite -> getGlobalBounds().contains(data -> window.mapPixelToCoords(mousePos))) {
                         drag = true;
                         initial = pSprite -> getPosition();
-                        cout << initial.x << " " << initial.y << endl;
-                        pSprite -> setPosition(Vector2f(Mouse::getPosition(data -> window)));
+                        pSprite -> setPosition(Vector2f(mousePos));
                         break;
                     }
-                    cout << "TEST" << endl;
                 }
                 break;
+
             case Event::MouseButtonReleased:
+                if (drag) pSprite -> setPosition(initial);
+                if (!alphaMap.getPixel(mousePos.x, mousePos.y).toInteger() && drag) {
+                    int radius = Towers::getRadius(i);
+                    int damage = Towers::getDamage(i);
+                    float fireRate = Towers::getFireRate(i);
+                    Sprite s = *pSprite;
+                    IntRect bounds = static_cast<IntRect> (pSprite -> getLocalBounds());
+                    switch(i) {
+                        case MOUSE:
+                            for (int j = bounds.left; j < bounds.width; j++)
+                                for (int k = bounds.top; k < bounds.height; k++)
+                                    alphaMap.setPixel(j, k, Color(10, 10, 10, 255));
+                            towers.addTower(Vector2f(mousePos), s, [=] () -> bool {
+                                Sprite attack(data -> assetHandler.getTexture("MouseAttack"));
+                                projectiles.addProjectile(
+                                        attack,
+                                        Vector2f(mousePos),
+                                        Vector2f(Mouse::getPosition(data -> window)),
+                                        100, 10
+                                );
+                                return true;
+                            }, radius, damage, fireRate);
+                        default: break;
+                    }
+                }
                 drag = false;
                 drawRange = false;
                 for (i = 0; i < 3; i++) {
                     pSprite = towerSprites[i];
-                    if (pSprite -> getGlobalBounds().contains(data -> window.mapPixelToCoords(data -> inputHandler.getMousePos(data -> window)))) {
+                    if (pSprite -> getGlobalBounds().contains(data -> window.mapPixelToCoords(mousePos))) {
                         cout << "clicked" << endl;
                         break;
                     }
                     else cout << "missed" << endl;
                 }
-                pSprite -> setPosition(initial);
                 break;
+
             case Event::MouseMoved:
                 if (drag) {
                     cout << i << endl;
                     drawRange = true;
-                    Vector2i mousePos(data -> inputHandler.getMousePos(data -> window));
                     pSprite -> setPosition(Vector2f(mousePos));
                     range.setRadius(Towers::getRadius(i));
                     range.setFillColor(
