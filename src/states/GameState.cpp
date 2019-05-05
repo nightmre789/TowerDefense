@@ -27,7 +27,6 @@ void GameState::init() {
             },
             300, 400, 7
     );
-    virus.setTexture(data -> assetHandler.getTexture("Virus"));
 
     map = new Map(new Sprite((data -> assetHandler.getTexture("Map"))), [] (float t) -> Vector2f {
         auto x = static_cast<float> (sqrt(112.5));
@@ -42,13 +41,34 @@ void GameState::init() {
             t <= 160    ? Vector2f(15 * t - 760, 50) :
             Vector2f(1280, 150);
     });
-    alphaMap = data -> assetHandler.getTexture("AlphaMap").copyToImage();
+
+    alpha.setTexture(data -> assetHandler.getTexture("AlphaMap"));
+    alphaMap = alpha.getTexture() -> copyToImage();
+
+    towerBar.setTexture(data -> assetHandler.getTexture("TowerBar"));
+    towerBar.setPosition(780, 620);
+
+    CDIcon.setTexture(data -> assetHandler.getTexture("CDKey"));
+    CDIcon.setOrigin(CDIcon.getLocalBounds().width / 2.f, CDIcon.getLocalBounds().height / 2.f);
+    CDIcon.setPosition(874, 667);
+    fanIcon.setTexture(data -> assetHandler.getTexture("Fan"));
+    fanIcon.setOrigin(fanIcon.getLocalBounds().width / 2.f, fanIcon.getLocalBounds().height / 2.f);
+    fanIcon.setPosition(1050, 668);
+    mouseIcon.setTexture(data -> assetHandler.getTexture("Mouse"));
+    mouseIcon.setOrigin(mouseIcon.getLocalBounds().width / 2.f, mouseIcon.getLocalBounds().height / 2.f);
+    mouseIcon.setPosition(956, 668);
+
+    towerSprites[0] = &CDIcon;
+    towerSprites[1] = &mouseIcon;
+    towerSprites[2] = &fanIcon;
+
 }
 
 void GameState::handleInput() {
     static auto *pSprite = new Sprite();
     static bool drag = false;
-    Vector2f initial;
+    static Vector2f initial;
+    static short unsigned i;
 
     Event e {};
     while (data -> window.pollEvent(e))
@@ -57,25 +77,45 @@ void GameState::handleInput() {
                 data -> window.close();
                 break;
             case Event::MouseButtonPressed:
-                if (virus.getGlobalBounds().contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window)))) {
-                    drag = true;
-                    pSprite = &virus;
-                    initial = Vector2f(Mouse::getPosition(data -> window));
-                    pSprite -> setPosition(Vector2f(Mouse::getPosition(data -> window)) - Vector2f(35.f, 35.f));
+                for (i = 0; i < 3; i++) {
+                    pSprite = towerSprites[i];
+                    if (pSprite -> getGlobalBounds().contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window)))) {
+                        drag = true;
+                        initial = pSprite -> getPosition();
+                        cout << initial.x << " " << initial.y << endl;
+                        pSprite -> setPosition(Vector2f(Mouse::getPosition(data -> window)));
+                        break;
+                    }
+                    cout << "TEST" << endl;
                 }
                 break;
             case Event::MouseButtonReleased:
                 drag = false;
-                if (virus.getGlobalBounds().contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window)))) {
-                    cout << "clicked" << endl;
+                drawRange = false;
+                for (i = 0; i < 3; i++) {
+                    pSprite = towerSprites[i];
+                    if (pSprite -> getGlobalBounds().contains(data -> window.mapPixelToCoords(data -> inputHandler.getMousePos(data -> window)))) {
+                        cout << "clicked" << endl;
+                        break;
+                    }
+                    else cout << "missed" << endl;
                 }
-                else cout << "missed" << endl;
                 pSprite -> setPosition(initial);
                 break;
             case Event::MouseMoved:
                 if (drag) {
-                    pSprite -> setPosition(Vector2f(Mouse::getPosition(data -> window)) - Vector2f(35.f, 35.f));
-                    cout << alphaMap.getPixel(Mouse::getPosition(data -> window).x, Mouse::getPosition(data -> window).y).toInteger() << endl;
+                    cout << i << endl;
+                    drawRange = true;
+                    Vector2i mousePos(data -> inputHandler.getMousePos(data -> window));
+                    pSprite -> setPosition(Vector2f(mousePos));
+                    range.setRadius(Towers::getRadius(i));
+                    range.setFillColor(
+                            alphaMap.getPixel(mousePos.x, mousePos.y).toInteger()
+                            ? Color(255, 0, 0, 100)
+                            : Color(60, 60, 60, 128)
+                    );
+                    range.setOrigin(Towers::getRadius(i), Towers::getRadius(i));
+                    range.setPosition(Vector2f(mousePos));
                 }
                 break;
             default:
@@ -96,10 +136,17 @@ void GameState::draw(float dt) {
     data -> window.clear(Color::Black);
 
     data -> window.draw(*map);
-    data -> window.draw(virus);
+
+    data -> window.draw(*towerSprites[0]);
 
     data -> window.draw(towers);
     data -> window.draw(projectiles);
+
+    data -> window.draw(towerBar);
+    data -> window.draw(CDIcon);
+    data -> window.draw(mouseIcon);
+    data -> window.draw(fanIcon);
+    if (drawRange) data -> window.draw(range);
 
     data -> window.display();
 }

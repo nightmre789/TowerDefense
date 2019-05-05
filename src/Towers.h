@@ -9,6 +9,12 @@
 using namespace std;
 using namespace sf;
 
+enum towerTypes {
+    CDKEY = 0,
+    MOUSE = 1,
+    FAN = 2
+};
+
 class Towers : public Drawable, public Transformable {
 
     struct Tower {
@@ -52,6 +58,15 @@ public:
             tower.reload += dt;
             if (tower.reload >= tower.fireRate)
                 if (tower.fire()) tower.reload = 0;
+        }
+    }
+
+    static int getRadius(short unsigned towerType) {
+        switch(towerType) {
+            case CDKEY: return 70;
+            case MOUSE: return 5;
+            case FAN: return 200;
+            default: return 0;
         }
     }
 };

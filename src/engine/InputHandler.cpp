@@ -1,4 +1,5 @@
 #include "InputHandler.h"
+#include "../util/Definitions.h"
 
 bool InputHandler::isClicked(Sprite sprite, Mouse::Button button, RenderWindow &window) {
     if (Mouse::isButtonPressed(button)) {
@@ -11,5 +12,9 @@ bool InputHandler::isClicked(Sprite sprite, Mouse::Button button, RenderWindow &
 }
 
 Vector2i InputHandler::getMousePos(RenderWindow &window) {
-    return Mouse::getPosition(window);
+    Vector2i mousePos(Mouse::getPosition(window));
+    return {
+        mousePos.x > SCREEN_WIDTH ? SCREEN_WIDTH : mousePos.x < 0 ? 0 : mousePos.x,
+        mousePos.y > SCREEN_HEIGHT ? SCREEN_HEIGHT : mousePos.y < 0 ? 0 : mousePos.y
+    };
 }

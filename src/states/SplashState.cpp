@@ -23,11 +23,19 @@ void SplashState::init() {
     data -> assetHandler.loadTexture("PlayButtonActive", "assets/images/b_playActive.png");
     data -> assetHandler.loadTexture("Burney", "assets/images/burney.png");
 
+    // gamestate assets
     data -> assetHandler.loadTexture("Map", "assets/images/map.png");
     data -> assetHandler.loadTexture("Virus", "assets/images/virus.png");
-    data -> assetHandler.loadTexture("CDKey", "assets/images/CDKey.png");
-    data -> assetHandler.loadTexture("CDKeyAttack", "assets/images/CDKey_attack.png");
     data -> assetHandler.loadTexture("AlphaMap", "assets/images/alpha.png");
+
+    data -> assetHandler.loadTexture("TowerBar", "assets/images/towerBar.png");
+    data -> assetHandler.loadTexture("CDKey", "assets/images/cdkey.png");
+    data -> assetHandler.loadTexture("CDKeyAttack", "assets/images/cdkeyAttack.png");
+    data -> assetHandler.loadTexture("Fan", "assets/images/fan.png");
+    data -> assetHandler.loadTexture("FanAttack", "assets/images/fanAttack.png");
+    data -> assetHandler.loadTexture("Mouse", "assets/images/mouse.png");
+    data -> assetHandler.loadTexture("MouseAttack", "assets/images/mouseAttack.png");
+
 
     play = new Button(SCREEN_WIDTH / 2.f - 59, 550,
             data -> assetHandler.getTexture("PlayButtonIdle"),
