@@ -14,7 +14,7 @@ using namespace sf;
 class GameState : public State {
     pGameData data;
     Clock clock;
-    int level;
+    int level, lives = 200, money = 550;
     Sprite *towerSprites[3], alpha, towerBar;
     Sprite CDIcon, fanIcon, mouseIcon;
     Map *map;
@@ -23,6 +23,8 @@ class GameState : public State {
     Projectiles projectiles;
     Image alphaMap;
     CircleShape range;
+    Text life, cash, gameOver;
+    Sprite heart, dollar;
     bool drawRange = false;
 
 public:
@@ -33,4 +35,27 @@ public:
     void handleInput() override;
     void update(float dt) override;
     void draw(float dt) override;
+
+    bool intersects(const CircleShape &c, const FloatRect &fr){
+        Vector2f topLeft(fr.left, fr.top);
+        Vector2f topRight(fr.left + fr.width, fr.top);
+        Vector2f botLeft(fr.left, fr.top + fr.height);
+        Vector2f botRight(fr.left + fr.width, fr.top + fr.height);
+
+        return contains(c, topLeft) ||
+               contains(c, topRight) ||
+               contains(c, botLeft) ||
+               contains(c, botRight);
+    }
+
+    bool contains(const CircleShape &c, const Vector2f &p){
+        Vector2f center = c.getPosition();
+        float a = (p.x - center.x);
+        float b = (p.y - center.y);
+        a *= a;
+        b *= b;
+        float r = c.getRadius() * c.getRadius();
+
+        return (( a + b ) < r);
+    }
 };

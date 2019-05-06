@@ -25,8 +25,11 @@ void SplashState::init() {
 
     // gamestate assets
     data -> assetHandler.loadTexture("Map", "assets/images/map.png");
-    data -> assetHandler.loadTexture("Virus", "assets/images/virus.png");
     data -> assetHandler.loadTexture("AlphaMap", "assets/images/alpha.png");
+
+    data -> assetHandler.loadTexture("Virus", "assets/images/virus.png");
+    data -> assetHandler.loadTexture("Trojan", "assets/images/trojan.png");
+    data -> assetHandler.loadTexture("Widow", "assets/images/widow.png");
 
     data -> assetHandler.loadTexture("TowerBar", "assets/images/towerBar.png");
     data -> assetHandler.loadTexture("CDKey", "assets/images/cdkey.png");
@@ -42,6 +45,9 @@ void SplashState::init() {
     data -> assetHandler.loadTexture("FanReload", "assets/images/fanReload.png");
     data -> assetHandler.loadTexture("Mouse", "assets/images/mouse.png");
     data -> assetHandler.loadTexture("MouseAttack", "assets/images/mouseAttack.png");
+
+    data -> assetHandler.loadTexture("Heart", "assets/images/heart.png");
+    data -> assetHandler.loadTexture("Dollar", "assets/images/dollar.png");
 
 
     play = new Button(SCREEN_WIDTH / 2.f - 59, 550,
@@ -66,11 +72,6 @@ void SplashState::handleInput() {
             data -> window.close();
             break;
         case Event::MouseButtonReleased:
-            Sprite s(data -> assetHandler.getTexture("Burney"));
-            projectiles.addProjectile(s,
-                    Vector2f(640, 360),
-                    Vector2f(Mouse::getPosition(data -> window)),
-                    150.f, 10.f);
             if (play -> contains(data -> window.mapPixelToCoords(Mouse::getPosition(data -> window))))
                 data -> stateHandler.pushState(pState(new GameState(data)), true);
             break;
@@ -90,10 +91,6 @@ void SplashState::update(float dt) {
     else play -> update(data -> window.mapPixelToCoords((Mouse::getPosition(data -> window))));
     particles.update(seconds(dt));
     projectiles.update(dt);
-    Image i = bg.getTexture() -> copyToImage();
-    int r = i.getPixel(600, 200).a;
-    cout << r << endl;
-//    cout << c.r << ", " << c.g << ", " << c.b << endl;
 }
 
 void SplashState::draw(float dt) {

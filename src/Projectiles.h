@@ -6,8 +6,10 @@
 
 #include "SFML/Graphics.hpp"
 #include <cmath>
+#include <list>
 #include <iostream>
 #include "util/Definitions.h"
+#include "Viruses.h"
 
 using namespace sf;
 using namespace std;
@@ -15,13 +17,18 @@ using namespace std;
 class Projectiles : public Drawable, public Transformable {
 
     struct Projectile {
-        Projectile(Sprite sprite, Vector2f velocity, Time lifetime)
-                : sprite(std::move(sprite)), velocity(velocity), lifetime(lifetime)
+        Projectile(Sprite sprite, Vector2f velocity, Time lifetime, int pierce, int damage)
+                : sprite(std::move(sprite))
+                , velocity(velocity)
+                , lifetime(lifetime)
+                , pierce(pierce)
+                , damage(damage)
         {}
 
         Sprite sprite;
         Vector2f velocity;
         Time lifetime;
+        int pierce, damage;
     };
 
     void draw(RenderTarget &target, RenderStates states) const override {
@@ -34,12 +41,12 @@ public:
 
     Projectiles() = default;
 
-    void addProjectile(Sprite &sprite, Vector2f start, Vector2f end, float speed, float lifetime) {
+    void addProjectile(Sprite &sprite, Vector2f start, Vector2f end, float speed, float lifetime, int pierce, int damage) {
         Vector2f aim(end - start);
         float rotation = atan2(aim.y, aim.x) * (float) (180 / PI) + 90;
         auto mag = static_cast<float> (sqrt(pow(aim.x, 2) + pow(aim.y, 2)));
         Vector2f unit(aim.x / mag, aim.y  / mag);
-        Projectile p(sprite, speed * unit, seconds(lifetime));
+        Projectile p(sprite, speed * unit, seconds(lifetime), pierce, damage);
         p.sprite.setOrigin(p.sprite.getLocalBounds().width / 2.f, p.sprite.getLocalBounds().height / 2.f);
         p.sprite.setPosition(start);
         p.sprite.setRotation(rotation);

@@ -13,19 +13,6 @@ using namespace sf;
 
 class Viruses : public Drawable, public Transformable {
 
-    struct Virus {
-        Virus(Sprite sprite, float speed, int health)
-            : sprite(std::move(sprite))
-            , speed(speed)
-            , health(health)
-            , completed(0)
-        {}
-
-        Sprite sprite;
-        float speed, completed;
-        int health;
-    };
-
     void draw(RenderTarget &target, RenderStates states) const override {
         for (const auto &virus : viruses) {
             target.draw(virus.sprite);
@@ -33,9 +20,25 @@ class Viruses : public Drawable, public Transformable {
     }
 
     function<Vector2f(float)> movement;
-    int complete;
 
+    int complete;
 public:
+
+    struct Virus {
+        Virus(Sprite sprite, float speed, int health, int life, int cash)
+                : sprite(std::move(sprite))
+                , speed(speed)
+                , health(health)
+                , completed(0)
+                , life(life)
+                , cash(cash)
+        {}
+
+        Sprite sprite;
+        float speed, completed;
+        int health, life, cash;
+    };
+
     vector<Virus> viruses;
 
     Viruses(function<Vector2f(float)> movement, int complete)
@@ -43,15 +46,15 @@ public:
         , complete(complete)
     {}
 
-    void addVirus(Sprite s, float speed ,int health) {
+    void addVirus(Sprite s, float speed ,int health, int life, int cash) {
 //        s.setOrigin(s.getLocalBounds().width / 2.f, s.getLocalBounds().height / 2.f);
-        Virus v(std::move(s), speed, health);
+        Virus v(std::move(s), speed, health, life, cash);
         viruses.push_back(v);
     }
 
     void update(float dt) {
         for (auto &virus : viruses) {
-            virus.completed += 0.5f * (dt / complete) * 100;
+            virus.completed += 0.5f * (dt / complete) * 100 * virus.speed;
             virus.sprite.setPosition(movement(virus.completed / 100 * complete));
         }
     }

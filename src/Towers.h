@@ -20,7 +20,7 @@ enum towerTypes {
 class Towers : public Drawable, public Transformable {
 
     struct Tower {
-        Tower(Vector2f position, Sprite sprite, Sprite reload, function<bool(void)> fire, int radius, int damage, float fireRate)
+        Tower(Vector2f position, Sprite sprite, Sprite reload, function<bool(void)> fire, int radius, int damage, float fireRate, int cost)
             : position(position)
             , fire(std::move(fire))
             , sprite(std::move(sprite))
@@ -30,9 +30,10 @@ class Towers : public Drawable, public Transformable {
             , fireRate(fireRate)
             , reload(0.f)
             , radius(CircleShape(radius))
+            , cost(cost)
         {}
 
-        int range, damage;
+        int range, damage, cost;
         CircleShape radius;
         float fireRate, reload;
         Vector2f position;
@@ -52,12 +53,12 @@ class Towers : public Drawable, public Transformable {
 public:
     Towers() = default;
 
-    void addTower(Vector2f position, Sprite &s, Sprite reload, const function<bool(void)> &fire, int radius, int damage, float fireRate) {
+    void addTower(Vector2f position, Sprite &s, Sprite reload, const function<bool(void)> &fire, int radius, int damage, float fireRate, int cost) {
         s.setOrigin(s.getLocalBounds().width / 2.f, s.getLocalBounds().height / 2.f);
         s.setPosition(position);
         reload.setOrigin(s.getLocalBounds().width / 2.f, s.getLocalBounds().height / 2.f);
         reload.setPosition(position);
-        Tower t(position, s, std::move(reload), fire, radius, damage, fireRate);
+        Tower t(position, s, std::move(reload), fire, radius, damage, fireRate, cost);
         towers.push_back(t);
     }
 
@@ -75,30 +76,48 @@ public:
         }
     }
 
+    static int getCost(short unsigned towerType) {
+        switch(towerType) {
+            case CDKEY: return 200;
+            case MOUSE: return 400;
+            case FAN: return 550;
+            default: return 1;
+        }
+    }
+
+    static int getPierce(short unsigned towerType) {
+        switch(towerType) {
+            case CDKEY: return 1;
+            case MOUSE: return 1;
+            case FAN: return 1;
+            default: return 1;
+        }
+    }
+
     static int getRadius(short unsigned towerType) {
         switch(towerType) {
-            case CDKEY: return 70;
+            case CDKEY: return 150;
             case MOUSE: return 50;
             case FAN: return 100;
-            default: return 0;
+            default: return 50;
         }
     }
 
     static int getDamage(short unsigned towerType) {
         switch(towerType) {
-            case CDKEY: return 50;
+            case CDKEY: return 80;
             case MOUSE: return 20;
             case FAN: return 15;
-            default: return 0;
+            default: return 15;
         }
     }
 
     static float getFireRate(short unsigned towerType) {
         switch(towerType) {
             case CDKEY: return 7.5;
-            case MOUSE: return 6.5;
+            case MOUSE: return 2.5;
             case FAN: return 5.5;
-            default: return 0;
+            default: return 10;
         }
     }
 };

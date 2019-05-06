@@ -45,6 +45,28 @@ void GameState::init() {
     mouseIcon.setOrigin(mouseIcon.getLocalBounds().width / 2.f, mouseIcon.getLocalBounds().height / 2.f);
     mouseIcon.setPosition(956, 668);
 
+    heart.setTexture(data -> assetHandler.getTexture("Heart"));
+    heart.setPosition(10, 10);
+    life.setFillColor(Color(243, 119, 95));
+    life.setPosition(80, 15);
+    life.setFont(data -> assetHandler.getFont("Semilight"));
+    life.setCharacterSize(36);
+    life.setString("200");
+
+    dollar.setTexture(data -> assetHandler.getTexture("Dollar"));
+    dollar.setPosition(10, 70);
+    cash.setFillColor(Color(239, 199, 88));
+    cash.setPosition(80, 75);
+    cash.setFont(data -> assetHandler.getFont("Semilight"));
+    cash.setCharacterSize(36);
+    cash.setString("550");
+
+    gameOver.setCharacterSize(72);
+    gameOver.setString("GAME OVER");
+    gameOver.setOrigin(gameOver.getGlobalBounds().width / 2.f, gameOver.getGlobalBounds().height / 2.f);
+    gameOver.setPosition(640, 360);
+    gameOver.setFont(data -> assetHandler.getFont("Semilight"));
+
     towerSprites[0] = &CDIcon;
     towerSprites[1] = &mouseIcon;
     towerSprites[2] = &fanIcon;
@@ -82,14 +104,46 @@ void GameState::handleInput() {
                 if (!alphaMap.getPixel(mousePos.x, mousePos.y).toInteger() && drag) {
                     int radius = Towers::getRadius(i);
                     int damage = Towers::getDamage(i);
+                    int pierce = Towers::getPierce(i);
+                    int cost = Towers::getCost(i);
                     float fireRate = Towers::getFireRate(i);
                     Sprite s = *pSprite;
+                    cout << cost << endl;
                     switch(i) {
                         case CDKEY:
-
+                            if (money >= cost) {
+                            towers.addTower(Vector2f(mousePos), s, s,
+                                    [=] () -> bool {
+                                        CircleShape c(radius);
+                                        c.setOrigin(radius, radius);
+                                        c.setPosition(Vector2f(mousePos));
+                                        float biggest = 0;
+                                        bool fired;
+                                        Sprite attack (data -> assetHandler.getTexture("CDKeyAttack"));
+                                        for (auto &virus : viruses -> viruses) {
+                                            if (intersects(c, virus.sprite.getGlobalBounds()))
+                                                if (virus.completed > biggest)
+                                                    biggest = virus.completed;
+                                        }
+                                        if (biggest) {
+                                            cout << biggest << endl;
+                                            fired = true;
+                                            projectiles.addProjectile(
+                                                    attack,
+                                                    Vector2f(mousePos),
+                                                    Vector2f(map -> movement(biggest + 10)),
+                                                    50, 5, pierce, damage
+                                            );
+                                        }
+                                        return fired;
+                                }, radius, damage, fireRate, cost);
+                                money -= cost;
+                                cash.setString(to_string(money));
+                            }
                             break;
 
                         case MOUSE:
+                            if (money >= cost) {
                             towers.addTower(Vector2f(mousePos), s, s,
                                     [=] () -> bool {
                                         Sprite attack(data -> assetHandler.getTexture("MouseAttack"));
@@ -97,14 +151,18 @@ void GameState::handleInput() {
                                             attack,
                                             Vector2f(mousePos),
                                             Vector2f(Mouse::getPosition(data -> window)),
-                                            100, 10
+                                            100, 10, pierce, damage
                                         );
                                         return true;
-                                    }, radius, damage, fireRate);
+                                    }, radius, damage, fireRate, cost);
+                                money -= cost;
+                                cash.setString(to_string(money));
+                            }
                             break;
 
                         case FAN:
-                            towers.addTower(Vector2f(mousePos), s, s,
+                            if (money >= cost)  {
+                                towers.addTower(Vector2f(mousePos), s, s,
                                     [=] () -> bool {
                                         for (int j = 1; j <= 7; j++) {
                                             string text("FanAttack");
@@ -115,11 +173,14 @@ void GameState::handleInput() {
                                                     Vector2f(mousePos),
                                                     Vector2f(Vector2f(mousePos)
                                                     + Vector2f((float) sin(PI_2 / 7 * (j - 1)), (float) cos(PI_2 / 7 * (j - 1)))),
-                                                    50, 2
+                                                    50, 2, pierce, damage
                                             );
                                         }
                                         return true;
-                                    }, radius, damage, fireRate);
+                                    }, radius, damage, fireRate, cost);
+                                money -= cost;
+                                cash.setString(to_string(money));
+                            }
                             break;
 
                         default: break;
@@ -167,58 +228,190 @@ void GameState::handleInput() {
 
 void GameState::update(float dt) {
     float elapsed = clock.getElapsedTime().asSeconds();
-    static float count = 0;
     towers.update(dt, data -> inputHandler.getMousePos(data -> window));
     projectiles.update(dt);
     viruses -> update(dt);
 
-    int i = 0, j = 0;
+    int i = 0, j = 0, ignore;
 
     for (auto &virus : viruses -> viruses) {
+        if (virus.completed > 85) {
+            lives -= virus.life;
+            life.setString(to_string(lives));
+            viruses -> viruses.erase(viruses->viruses.begin() + i);
+        }
         for (auto &projectile : projectiles.projectiles) {
             if (projectile.sprite.getGlobalBounds().intersects(virus.sprite.getGlobalBounds())) {
-                projectiles.projectiles.erase(projectiles.projectiles.begin() + j);
-                viruses -> viruses.erase(viruses -> viruses.begin() + i);
-                cout << "PEW PEW BITCH" << endl;
-            } j++;
+                int pierce = projectile.pierce;
+                if (pierce == 1) projectiles.projectiles.erase(projectiles.projectiles.begin() + j);
+                else {
+                    projectile.pierce--;
+                }
+                virus.health -= projectile.damage;
+                if (virus.health <= 0) {
+                    viruses -> viruses.erase(viruses->viruses.begin() + i);
+                    money += 5;
+                    cash.setString(to_string(money));
+                }
+            }
+            j++;
         } i++;
     }
 
+    static float count = 0;
+    static float tCount = 0;
+    static float wCount = 0;
+
     switch(level) {
         case 1:
-            if (elapsed < 20) {
-                if (count > 10) {
+            if (elapsed < 5) {
+                if (count > 7) {
                     count = 0;
-                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Virus")), 13, 100);
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Virus")), 1, 50, 1, 2);
                 } else count += dt;
-            } else level = 2;
+
+            } else if (viruses -> viruses.empty()) {
+                level = 2;
+                money += 150;
+                cash.setString(to_string(money));
+                clock.restart();
+            }
             break;
         case 2:
+            if (elapsed < 20) {
+                if (tCount > 7) {
+                    tCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Trojan")), 3, 50, 1, 2);
+                } else tCount += dt;
+
+                if (wCount > 3) {
+                    wCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Widow")), 1,  80, 3, 2);
+                } else wCount += dt;
+
+            } else if (viruses -> viruses.empty()) {
+                level = 3;
+                money += 150;
+                cash.setString(to_string(money));
+                clock.restart();
+            }
             break;
+        case 3:
+            if (elapsed < 50) {
+                if (tCount > 5) {
+                    tCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Trojan")), 3, 50, 1, 2);
+                } else tCount += dt;
+
+            } else if (viruses -> viruses.empty()) {
+                level = 4;
+                money += 150;
+                cash.setString(to_string(money));
+                clock.restart();
+            }
+            break;
+        case 4:
+            if (elapsed < 20) {
+                if (count > 3) {
+                    count = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Virus")), 1, 50, 1, 2);
+                } else count += dt;
+
+                if (tCount > 7) {
+                    tCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Trojan")), 3, 50, 1, 2);
+                } else tCount += dt;
+
+                if (wCount > 10) {
+                    wCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Widow")), 1, 80, 2, 4);
+                } else wCount += dt;
+
+            } else if (viruses -> viruses.empty()) {
+                level = 5;
+                money += 150;
+                cash.setString(to_string(money));
+                clock.restart();
+            }
+            break;
+        case 5:
+            if (elapsed < 40) {
+                if (wCount > 3) {
+                    wCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Widow")), 3, 100, 2, 4);
+                } else wCount += dt;
+
+            } else if (viruses -> viruses.empty()) {
+                level = 6;
+                money += 150;
+                cash.setString(to_string(money));
+                clock.restart();
+            }
+            break;
+        case 6:
+            if (elapsed < 50) {
+                if (count > 3) {
+                    count = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Virus")), 2, 50, 1, 2);
+                } else count += dt;
+
+                if (tCount > 7) {
+                    tCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Trojan")), 5, 50, 1, 2);
+                } else tCount += dt;
+
+                if (wCount > 10) {
+                    wCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Widow")), 2, 500, 2, 4);
+                } else wCount += dt;
+
+            } else if (viruses -> viruses.empty()) {
+                level = 7;
+                money += 150;
+                cash.setString(to_string(money));
+                clock.restart();
+            }
+            break;
+        case 7:
+            if (elapsed < 10) {
+                if (wCount > 1) {
+                    wCount = 0;
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Burney")), 5, 200, 2, 4);
+                } else wCount += dt;
+            } else if (viruses -> viruses.empty()) {
+                level = 7;
+                clock.restart();
+            }
         default:
             break;
     }
 }
 
 void GameState::draw(float dt) {
-    float elapsed = clock.getElapsedTime().asSeconds();
 
     data -> window.clear(Color::Black);
 
-    data -> window.draw(*map);
+    if (lives > 0) {
+        data->window.draw(*map);
 
-    data -> window.draw(*towerSprites[0]);
+        data->window.draw(towers);
+        data->window.draw(projectiles);
 
-    data -> window.draw(towers);
-    data -> window.draw(projectiles);
+        data->window.draw(*viruses);
 
-    data -> window.draw(*viruses);
+        data->window.draw(towerBar);
+        data->window.draw(CDIcon);
+        data->window.draw(mouseIcon);
+        data->window.draw(fanIcon);
 
-    data -> window.draw(towerBar);
-    data -> window.draw(CDIcon);
-    data -> window.draw(mouseIcon);
-    data -> window.draw(fanIcon);
-    if (drawRange) data -> window.draw(range);
+        data->window.draw(heart);
+        data->window.draw(life);
+
+        data->window.draw(dollar);
+        data->window.draw(cash);
+
+        if (drawRange) data->window.draw(range);
+    } else data -> window.draw(gameOver);
 
     data -> window.display();
 }
