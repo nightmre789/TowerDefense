@@ -23,8 +23,11 @@ class GameState : public State {
     Projectiles projectiles;
     Image alphaMap;
     CircleShape range;
-    Text life, cash, gameOver;
+    Text life, cash;
+    Sprite gameOver;
     Sprite heart, dollar;
+    Text waveNumber;
+    bool finished = false;
     bool drawRange = false;
 
 public:

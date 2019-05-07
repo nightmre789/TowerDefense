@@ -41,8 +41,6 @@ class Towers : public Drawable, public Transformable {
         function<bool(void)> fire;
     };
 
-    vector<Tower> towers;
-
     void draw(RenderTarget &target, RenderStates states) const override {
         for (const auto &tower : towers) {
             if (tower.reload <= tower.fireRate) target.draw(tower.reloadSprite);
@@ -51,6 +49,8 @@ class Towers : public Drawable, public Transformable {
     }
 
 public:
+
+    vector<Tower> towers;
     Towers() = default;
 
     void addTower(Vector2f position, Sprite &s, Sprite reload, const function<bool(void)> &fire, int radius, int damage, float fireRate, int cost) {
@@ -115,7 +115,7 @@ public:
     static float getFireRate(short unsigned towerType) {
         switch(towerType) {
             case CDKEY: return 7.5;
-            case MOUSE: return 2.5;
+            case MOUSE: return 1.5;
             case FAN: return 5.5;
             default: return 10;
         }

@@ -7,6 +7,7 @@ using namespace sf;
 class AssetHandler {
     map<string, Texture> textures;
     map<string, Font> fonts;
+    map<int, float> floats;
 
 public:
     AssetHandler() = default;

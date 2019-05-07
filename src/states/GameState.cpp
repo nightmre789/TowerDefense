@@ -61,15 +61,17 @@ void GameState::init() {
     cash.setCharacterSize(36);
     cash.setString("550");
 
-    gameOver.setCharacterSize(72);
-    gameOver.setString("GAME OVER");
-    gameOver.setOrigin(gameOver.getGlobalBounds().width / 2.f, gameOver.getGlobalBounds().height / 2.f);
-    gameOver.setPosition(640, 360);
-    gameOver.setFont(data -> assetHandler.getFont("Semilight"));
+    gameOver.setTexture(data -> assetHandler.getTexture("GameOver"));
 
     towerSprites[0] = &CDIcon;
     towerSprites[1] = &mouseIcon;
     towerSprites[2] = &fanIcon;
+
+    waveNumber.setPosition(550, 0);
+    waveNumber.setString("Wave #1");
+    waveNumber.setFont(data -> assetHandler.getFont("Semilight"));
+    waveNumber.setCharacterSize(30);
+    waveNumber.setFillColor(Color::White);
 }
 
 void GameState::handleInput() {
@@ -87,6 +89,17 @@ void GameState::handleInput() {
                 data -> window.close();
                 break;
 
+            case Event::KeyPressed:
+                if(e.key.code == Keyboard::R || finished) {
+                    viruses -> viruses.clear();
+                    towers.towers.clear();
+                    projectiles.projectiles.clear();
+                    level = 1;
+                    lives = 200;
+                    money = 550;
+                    cash.setString(to_string(money));
+                    life.setString(to_string(lives));
+                }
             case Event::MouseButtonPressed:
                 for (i = 0; i < 3; i++) {
                     pSprite = towerSprites[i];
@@ -231,12 +244,14 @@ void GameState::update(float dt) {
     towers.update(dt, data -> inputHandler.getMousePos(data -> window));
     projectiles.update(dt);
     viruses -> update(dt);
+    waveNumber.setString("Wave #" + to_string(level));
 
     int i = 0, j = 0, ignore;
 
     for (auto &virus : viruses -> viruses) {
         if (virus.completed > 85) {
             lives -= virus.life;
+            if (lives <= 0) finished = true;
             life.setString(to_string(lives));
             viruses -> viruses.erase(viruses->viruses.begin() + i);
         }
@@ -250,7 +265,7 @@ void GameState::update(float dt) {
                 virus.health -= projectile.damage;
                 if (virus.health <= 0) {
                     viruses -> viruses.erase(viruses->viruses.begin() + i);
-                    money += 5;
+                    money += 3;
                     cash.setString(to_string(money));
                 }
             }
@@ -264,7 +279,7 @@ void GameState::update(float dt) {
 
     switch(level) {
         case 1:
-            if (elapsed < 5) {
+            if (elapsed < 15) {
                 if (count > 7) {
                     count = 0;
                     viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Virus")), 1, 50, 1, 2);
@@ -297,10 +312,10 @@ void GameState::update(float dt) {
             }
             break;
         case 3:
-            if (elapsed < 50) {
+            if (elapsed < 30) {
                 if (tCount > 5) {
                     tCount = 0;
-                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Trojan")), 3, 50, 1, 2);
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Trojan")), 6, 50, 1, 2);
                 } else tCount += dt;
 
             } else if (viruses -> viruses.empty()) {
@@ -335,7 +350,7 @@ void GameState::update(float dt) {
             }
             break;
         case 5:
-            if (elapsed < 40) {
+            if (elapsed < 30) {
                 if (wCount > 3) {
                     wCount = 0;
                     viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Widow")), 3, 100, 2, 4);
@@ -349,7 +364,7 @@ void GameState::update(float dt) {
             }
             break;
         case 6:
-            if (elapsed < 50) {
+            if (elapsed < 20) {
                 if (count > 3) {
                     count = 0;
                     viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Virus")), 2, 50, 1, 2);
@@ -376,7 +391,7 @@ void GameState::update(float dt) {
             if (elapsed < 10) {
                 if (wCount > 1) {
                     wCount = 0;
-                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Burney")), 5, 200, 2, 4);
+                    viruses -> addVirus(Sprite(data -> assetHandler.getTexture("Burney")), 5, 200, 5, 4);
                 } else wCount += dt;
             } else if (viruses -> viruses.empty()) {
                 level = 7;
@@ -410,8 +425,12 @@ void GameState::draw(float dt) {
         data->window.draw(dollar);
         data->window.draw(cash);
 
+        data -> window.draw(waveNumber);
+
         if (drawRange) data->window.draw(range);
-    } else data -> window.draw(gameOver);
+    } else {
+        data -> window.draw(gameOver);
+    }
 
     data -> window.display();
 }

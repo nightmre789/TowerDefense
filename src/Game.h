@@ -15,6 +15,7 @@ struct GD {
     AssetHandler assetHandler;
     InputHandler inputHandler;
 };
+
 typedef shared_ptr <GD> pGameData;
 
 class Game {

@@ -48,7 +48,7 @@ void SplashState::init() {
 
     data -> assetHandler.loadTexture("Heart", "assets/images/heart.png");
     data -> assetHandler.loadTexture("Dollar", "assets/images/dollar.png");
-
+    data -> assetHandler.loadTexture("GameOver", "assets/images/gameOver.png");
 
     play = new Button(SCREEN_WIDTH / 2.f - 59, 550,
             data -> assetHandler.getTexture("PlayButtonIdle"),
